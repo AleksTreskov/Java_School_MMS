@@ -1,9 +1,12 @@
 package edu.AleksandrTreskov.mms.repository;
 
-import edu.AleksandrTreskov.mms.model.Client;
+import edu.AleksandrTreskov.mms.entity.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface ClientRepository extends JpaRepository<Client,Integer>{
+        Optional<Client> findByEmail(String username);
         }

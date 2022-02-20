@@ -1,6 +1,4 @@
-package edu.AleksandrTreskov.mms.model;
-
-import lombok.Data;
+package edu.AleksandrTreskov.mms.entity;
 
 import javax.persistence.*;
 import java.util.HashMap;

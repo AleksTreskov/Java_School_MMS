@@ -1,6 +1,6 @@
 package edu.AleksandrTreskov.mms.repository;
 
-import edu.AleksandrTreskov.mms.model.Address;
+import edu.AleksandrTreskov.mms.entity.Address;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

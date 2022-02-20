@@ -1,6 +1,5 @@
-package edu.AleksandrTreskov.mms.model;
+package edu.AleksandrTreskov.mms.entity;
 
-import edu.AleksandrTreskov.mms.common.Role;
 
 import javax.persistence.*;
 import java.util.List;
@@ -11,19 +10,20 @@ public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(name = "name", nullable = false)
+    @Column(name = "name")
     private String name;
-    @Column(name = "surname", nullable = false)
+    @Column(name = "surname")
     private String surname;
-    @Column(name = "date_of_birth", nullable = false)
+    @Column(name = "date_of_birth" )
     private String birthDate;
     @Column(name = "email", nullable = false)
     private String email;
     @Column(name = "password", nullable = false)
-    private char[] password;
+    private String password;
     @OneToMany(mappedBy = "client")
     private List<Address> addresses;
-    @Column(name = "role")
+    @ManyToOne
+    @JoinColumn (name = "role_id")
     private Role role;
     @Column(name = "is_deleted")
     private boolean isDeleted = false;
@@ -67,11 +67,11 @@ public class Client {
         this.email = email;
     }
 
-    public char[] getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(char[] password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 

@@ -1,7 +1,4 @@
 
-server:
-  servlet:
-    context-path:  /api/v1
 spring:
   datasource:
     username: root

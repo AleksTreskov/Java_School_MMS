@@ -1,4 +1,4 @@
-package edu.AleksandrTreskov.mms.model;
+package edu.AleksandrTreskov.mms.entity;
 
 import edu.AleksandrTreskov.mms.common.OrderStatus;
 import edu.AleksandrTreskov.mms.common.PaymentMethod;

@@ -1,6 +1,6 @@
 package edu.AleksandrTreskov.mms.repository;
 
-import edu.AleksandrTreskov.mms.model.Purchase;
+import edu.AleksandrTreskov.mms.entity.Purchase;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
