@@ -35,7 +35,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/css/**").permitAll()
                 .antMatchers("/auth/success").authenticated()
                 .antMatchers("/auth/**").permitAll()
-                //Все остальные страницы требуют аутентификации
                 .anyRequest()
                 .authenticated()
                 .and().formLogin()
