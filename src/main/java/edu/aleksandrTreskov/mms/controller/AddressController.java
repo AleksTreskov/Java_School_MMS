@@ -1,7 +1,5 @@
 package edu.aleksandrTreskov.mms.controller;
 
-import edu.aleksandrTreskov.mms.entity.Address;
-import edu.aleksandrTreskov.mms.mapstruct.dto.AddressDTO;
 import edu.aleksandrTreskov.mms.service.AddressService;
 import edu.aleksandrTreskov.mms.service.ClientService;
 import org.springframework.stereotype.Controller;

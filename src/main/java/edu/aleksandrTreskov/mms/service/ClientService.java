@@ -1,13 +1,12 @@
 package edu.aleksandrTreskov.mms.service;
 
-import edu.aleksandrTreskov.mms.entity.Role;
 import edu.aleksandrTreskov.mms.entity.Client;
+import edu.aleksandrTreskov.mms.entity.Role;
 import edu.aleksandrTreskov.mms.mapstruct.dto.ClientDTO;
 import edu.aleksandrTreskov.mms.mapstruct.mapper.ClientMapper;
 import edu.aleksandrTreskov.mms.repository.ClientRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;

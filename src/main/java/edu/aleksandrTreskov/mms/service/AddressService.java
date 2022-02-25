@@ -1,10 +1,8 @@
 package edu.aleksandrTreskov.mms.service;
 
 import edu.aleksandrTreskov.mms.entity.Address;
-import edu.aleksandrTreskov.mms.entity.Client;
 import edu.aleksandrTreskov.mms.mapstruct.dto.AddressDTO;
 import edu.aleksandrTreskov.mms.mapstruct.mapper.AddressMapper;
-import edu.aleksandrTreskov.mms.mapstruct.mapper.ClientMapper;
 import edu.aleksandrTreskov.mms.repository.AddressRepository;
 import org.springframework.stereotype.Service;
 
