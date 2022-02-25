@@ -10,21 +10,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
-import java.util.List;
+
 
 @Controller
 @RequestMapping("/addresses")
 public class AddressController {
     private final AddressService addressService;
-    private final ClientService clientService;
 
     public AddressController(AddressService addressService, ClientService clientService) {
         this.addressService = addressService;
-        this.clientService = clientService;
     }
 
     @GetMapping
-    public String getAllAdresses(Model model, Principal principal) {
+    public String getAllAddresses(Model model, Principal principal) {
         model.addAttribute("addresses",addressService.getAllAddressesByEmail(principal.getName()));
         return "addresses";
     }
