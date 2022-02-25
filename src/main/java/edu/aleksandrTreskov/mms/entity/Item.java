@@ -28,8 +28,8 @@ public class Item {
     private String category;
     @ElementCollection
     private Map<String, String> parameters = new HashMap<>();
-    @Column(name = "weight",nullable = false)
-    private int weight;
+    @Column(name = "price",nullable = false)
+    private int price;
     @Column(name = "quantity")
     private int quantity;
     @Column(name = "is_deleted")

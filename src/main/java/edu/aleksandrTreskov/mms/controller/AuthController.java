@@ -23,10 +23,6 @@ public class AuthController {
         return "login";
     }
 
-    @GetMapping("/success")
-    public String getSuccessPage() {
-        return "success";
-    }
 
     @PostMapping
     public String saveNewUser(@ModelAttribute("client") Client client) {

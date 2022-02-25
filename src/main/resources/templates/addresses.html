@@ -15,18 +15,23 @@
     <title>Title</title>
     <link  rel="stylesheet" type="text/css" href="../css/style.css" />
 </head>
-
 <body>
-<div class="main-w3layouts wrapper">
-<h2>Here is your App's clients </h2>
+<h3>Addresses for delivery</h3>
+<div th:each="address :${addresses}">
+<ul >
+    <li class="text" th:text="${address.country}"></li>
+    <li class="text" th:text="${address.city}"></li>
+    <li class="text" th:text="${address.index}"></li>
+    <li class="text" th:text="${address.street}"></li>
+    <li class="text" th:text="${address.house}"></li>
+    <li class="text" th:text="${address.flat}"></li>
 
-<ul th:each="client :${clients}">
-    <li class="text" th:text="${client.name}"></li>
-    <li class="text" th:text="${client.surname}"></li>
-    <li class="text" th:text="${client.email}"></li>
-    <li class="text" th:text="${client.birthDate}"></li>
 </ul>
-
+<br>
 </div>
+
+<form action="/profile" method="GET">
+    <button type="submit">Back</button>
+</form>
 </body>
 </html>

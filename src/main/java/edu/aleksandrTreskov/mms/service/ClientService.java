@@ -7,14 +7,17 @@ import edu.aleksandrTreskov.mms.mapstruct.mapper.ClientMapper;
 import edu.aleksandrTreskov.mms.repository.ClientRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class ClientService {
     private final ClientRepository clientRepository;
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     public ClientService(ClientRepository clientRepository, PasswordEncoder passwordEncoder) {
         this.clientRepository = clientRepository;
@@ -39,5 +42,16 @@ public class ClientService {
     public ClientDTO findById(long id) {
         Client client = clientRepository.findById(id);
         return ClientMapper.INSTANCE.toDTO(client);
+    }
+
+    public void deleteClient(long id) {
+        clientRepository.findById(id).setDeleted(true);
+    }
+
+    public ClientDTO findByEmail(String email) {
+        Optional<Client> client = clientRepository.findByEmail(email);
+        if (client.isPresent())
+        return ClientMapper.INSTANCE.toDTO(client.get());
+        throw new NoSuchElementException();
     }
 }

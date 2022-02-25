@@ -15,18 +15,19 @@
     <title>Title</title>
     <link  rel="stylesheet" type="text/css" href="../css/style.css" />
 </head>
-
 <body>
-<div class="main-w3layouts wrapper">
-<h2>Here is your App's clients </h2>
+<div class="main-w3layouts wrapper" th:object="${client}">
+    <p class="text" th:text="${client.name}"></p>
+    <p class="text" th:text="${client.surname}"></p>
+    <p class="text" th:text="${client.email}"></p>
+    <p class="text" th:text="${client.birthDate}"></p>
 
-<ul th:each="client :${clients}">
-    <li class="text" th:text="${client.name}"></li>
-    <li class="text" th:text="${client.surname}"></li>
-    <li class="text" th:text="${client.email}"></li>
-    <li class="text" th:text="${client.birthDate}"></li>
-</ul>
-
+<form th:method="get" th:action="@{/addresses}">
+    <button type="submit">Addresses</button>
+</form>
+    <form action="/auth/logout" method="POST">
+        <button type="submit">Logout</button>
+    </form>
 </div>
 </body>
 </html>
