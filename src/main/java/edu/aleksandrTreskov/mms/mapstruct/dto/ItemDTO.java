@@ -9,9 +9,10 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ItemDTO {
+    private long id;
     private String name;
     private String category;
     private Map<String, String> parameters;
-    private int weight;
     private int quantity;
+    private double price;
 }

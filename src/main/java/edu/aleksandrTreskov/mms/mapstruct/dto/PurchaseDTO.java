@@ -20,10 +20,10 @@ public class PurchaseDTO {
     private long id;
     private Client client;
     private Address address;
+    private int totalPrice;
     private PaymentMethod paymentMethod;
     private ShipmentMethod shipmentMethod;
     private List<Item> items;
     private PaymentStatus paymentStatus;
     private OrderStatus orderStatus;
-    private boolean isDeleted = false;
 }

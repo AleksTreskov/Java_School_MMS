@@ -11,4 +11,5 @@ import org.mapstruct.factory.Mappers;
 public interface AddressMapper {
     AddressMapper INSTANCE = Mappers.getMapper(AddressMapper.class);
     AddressDTO toDTO(Address address);
+    Address toAddress(AddressDTO addressDTO);
 }

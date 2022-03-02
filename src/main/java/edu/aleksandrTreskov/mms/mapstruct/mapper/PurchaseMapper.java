@@ -12,4 +12,6 @@ public interface PurchaseMapper {
     PurchaseMapper INSTANCE = Mappers.getMapper(PurchaseMapper.class);
 
     PurchaseDTO toDTO(Purchase purchase);
+
+    Purchase toPurchase(PurchaseDTO purchaseDTO);
 }

@@ -5,23 +5,21 @@ import edu.aleksandrTreskov.mms.entity.Role;
 import edu.aleksandrTreskov.mms.mapstruct.dto.ClientDTO;
 import edu.aleksandrTreskov.mms.mapstruct.mapper.ClientMapper;
 import edu.aleksandrTreskov.mms.repository.ClientRepository;
+import edu.aleksandrTreskov.mms.repository.PurchaseRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class ClientService {
+    private final PurchaseRepository purchaseRepository;
     private final ClientRepository clientRepository;
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    public ClientService(ClientRepository clientRepository, PasswordEncoder passwordEncoder) {
-        this.clientRepository = clientRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     public List<ClientDTO> getAllClients() {
 
@@ -47,10 +45,36 @@ public class ClientService {
         clientRepository.findById(id).setDeleted(true);
     }
 
+    public Map<ClientDTO, Integer> findTop10ByPurchases() {
+        Map<ClientDTO, Integer> map = new LinkedHashMap<>();
+        List<Client> clients = clientRepository.findTop10ByPurchases();
+        List<Integer> totalPrice = purchaseRepository.findTopPrices();
+        for (int i = 0; i < clients.size(); i++) {
+            map.put(ClientMapper.INSTANCE.toDTO(clients.get(i)), totalPrice.get(i));
+        }
+        return map;
+
+
+    }
+
     public ClientDTO findByEmail(String email) {
         Optional<Client> client = clientRepository.findByEmail(email);
         if (client.isPresent())
-        return ClientMapper.INSTANCE.toDTO(client.get());
+            return ClientMapper.INSTANCE.toDTO(client.get());
         throw new NoSuchElementException();
     }
+
+//    public static  Map<ClientDTO, Integer> sortByValue(Map<ClientDTO, Integer> map) {
+//
+//        return map.entrySet()
+//                .stream()
+//                .sorted(Map.Entry.<ClientDTO, Integer>comparingByValue().reversed())
+//                .collect(Collectors.toMap(
+//                        Map.Entry::getKey,
+//                        Map.Entry::getValue,
+//                        (e1, e2) -> e1,
+//                        LinkedHashMap::new
+//                ));
+//    }
+//}
 }

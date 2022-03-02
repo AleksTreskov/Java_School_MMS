@@ -2,7 +2,7 @@ package edu.aleksandrTreskov.mms.controller;
 
 import edu.aleksandrTreskov.mms.mapstruct.dto.ClientDTO;
 import edu.aleksandrTreskov.mms.service.ClientService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,18 +10,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
-
+@RequiredArgsConstructor
 @Controller
 @RequestMapping(value = "/clients")
 public class ClientController {
-    @Autowired
-    private ClientService clientService;
+    private final ClientService clientService;
 
-    @GetMapping()
-    public String getAllClients(Model model) {
-        List<ClientDTO> clients = clientService.getAllClients();
-        model.addAttribute("clients", clients);
+
+    @GetMapping
+    public String findTop10ByPurchases(Model model) {
+        model.addAttribute("clients", clientService.findTop10ByPurchases());
         return "clients";
     }
 
@@ -31,8 +29,9 @@ public class ClientController {
         model.addAttribute("client", client);
         return "clients";
     }
+
     @DeleteMapping("/{id}")
-    public String deleteClient(@PathVariable long id){
+    public String deleteClient(@PathVariable long id) {
         clientService.deleteClient(id);
         return "clients";
     }

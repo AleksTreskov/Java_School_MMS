@@ -10,5 +10,8 @@ import org.mapstruct.factory.Mappers;
 )
 public interface ItemMapper {
     ItemMapper INSTANCE = Mappers.getMapper(ItemMapper.class);
+
     ItemDTO toDTO(Item item);
+
+    Item toItem(ItemDTO itemDto);
 }

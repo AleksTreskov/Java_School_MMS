@@ -20,14 +20,16 @@ public class AddressService {
     public List<AddressDTO> getAllAddressesByEmail(String email) {
 
         List<AddressDTO> addresses = new ArrayList<>();
-        addressRepository.getAllByEmail(email).forEach(address -> addresses.add(AddressMapper.INSTANCE.toDTO(address)));
+        addressRepository.getAllByEmail(email).forEach(address -> {
+            if (!address.isDeleted())
+                addresses.add(AddressMapper.INSTANCE.toDTO(address));
+        });
         return addresses;
     }
 
     public void saveAddress(Address address) {
         addressRepository.save(address);
     }
-
 
     public void deleteAddress(long id) {
         addressRepository.findById(id).setDeleted(true);

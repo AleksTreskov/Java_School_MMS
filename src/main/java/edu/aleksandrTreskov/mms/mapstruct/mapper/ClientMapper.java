@@ -10,6 +10,8 @@ import org.mapstruct.factory.Mappers;
 )
 public interface ClientMapper {
     ClientMapper INSTANCE = Mappers.getMapper(ClientMapper.class);
+
     ClientDTO toDTO(Client client);
 
+    Client toClient(ClientDTO clientDTO);
 }

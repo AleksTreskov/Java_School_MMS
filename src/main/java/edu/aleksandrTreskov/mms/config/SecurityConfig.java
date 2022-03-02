@@ -30,7 +30,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .authorizeRequests()
+                .authorizeRequests().
+                antMatchers("/catalog").permitAll()
+                .antMatchers("/js/**").permitAll()
                 .antMatchers("/css/**").permitAll()
                 .antMatchers("/auth/**").not().fullyAuthenticated()
                 .antMatchers("/clients/**").hasRole("ADMIN")

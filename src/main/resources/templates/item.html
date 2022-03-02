@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script
+            type="application/x-javascript"> addEventListener("load", function () {
+        setTimeout(hideURLbar, 0);
+    }, false);
+
+    function hideURLbar() {
+        window.scrollTo(0, 1);
+    } </script>
+    <title>Title</title>
+    <link  rel="stylesheet" type="text/css" href="../css/style.css" />
+</head>
+
+<body>
+<p th:text="${item.getName()}"></p>
+<p th:text=" ${'Category: ' + item.getCategory()}"></p>
+<p th:text=" ${'Price: ' + item.getPrice()}"></p>
+
+<p th:text="${'Quantity:' + item.getQuantity()}"></p>
+<ul>
+    Parameters:
+
+    <li th:each="entry: ${parameters}">
+        <span th:text="${entry.key}"></span> : <span th:text="${entry.value}"></span>
+    </li>
+</ul>
+</body>
+</html>

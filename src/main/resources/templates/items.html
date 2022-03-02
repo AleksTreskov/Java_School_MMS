@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" >
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script
+            type="application/x-javascript"> addEventListener("load", function () {
+        setTimeout(hideURLbar, 0);
+    }, false);
+
+    function hideURLbar() {
+        window.scrollTo(0, 1);
+    } </script>
+    <title>Title</title>
+    <link  rel="stylesheet" type="text/css" href="../css/style.css" />
+</head>
+
+<body>
+<div class="main-w3layouts wrapper">
+    <h2>Here is your App's clients </h2>
+
+    <div th:each="item :${items}" >
+        <a th:href="@{/item/{id}(id=${item.getId})}"
+            th:text="${item.getName() + ', ' + item.getPrice()}">
+        </a>
+    </div>
+
+
+
+
+    </a>
+    <div sec:authorize="hasRole('ROLE_ADMIN')">
+        <form th:action="@{/newItem}" th:method="GET">
+            <button type="submit">Add new item</button>
+        </form>
+
+    </div>
+
+</div>
+</body>
+</html>
