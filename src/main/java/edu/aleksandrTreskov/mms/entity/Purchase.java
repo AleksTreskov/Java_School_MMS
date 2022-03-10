@@ -6,12 +6,17 @@ import edu.aleksandrTreskov.mms.common.PaymentStatus;
 import edu.aleksandrTreskov.mms.common.ShipmentMethod;
 import lombok.Data;
 import lombok.ToString;
-import org.hibernate.annotations.Cascade;
-
-import javax.persistence.*;
-import java.time.LocalDate;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.GenerationType;
+import javax.persistence.OneToOne;
+import javax.persistence.ManyToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 
