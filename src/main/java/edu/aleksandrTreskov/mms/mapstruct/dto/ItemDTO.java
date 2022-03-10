@@ -3,6 +3,7 @@ package edu.aleksandrTreskov.mms.mapstruct.dto;
 import lombok.*;
 
 import java.util.Map;
+
 @Builder
 @Getter
 @Setter
@@ -15,4 +16,5 @@ public class ItemDTO {
     private Map<String, String> parameters;
     private int quantity;
     private double price;
+    private int sold;
 }

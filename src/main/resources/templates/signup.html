@@ -1,74 +1,103 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://thymeleaf.org">
+<html lang="en" xmlns:th="http://thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
-    <title>Creative Colorlib SignUp Form</title>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script
-            type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
-    <!-- Custom Theme files -->
-    <link href="../css/style.css" rel="stylesheet" type="text/css" media="all" />
-    <!-- //Custom Theme files -->
-    <!-- web font -->
-    <link href="//fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i" rel="stylesheet">
-    <!-- //web font -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Online shop</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css" />
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
+
+        <link rel="stylesheet" href="../libs/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../css/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:300,400,400i,700&amp;subset=cyrillic-ext"
+          rel="stylesheet">
 </head>
 
 <body>
-<!-- main -->
-<div class="main-w3layouts wrapper">
-    <h1>Welcome! Please,sign up:</h1>
-    <div class="main-agileinfo">
-        <div class="agileits-top">
-            <form th:method="POST" th:action="@{/auth}" th:object="${client}">
-                <input class="text" type="text" th:field="*{name}" name="First_name" placeholder="First_name"
-                       required="">
-                <br>
-                <br>
-                <input class="text" type="text" th:field="*{surname}" name="Last_name" placeholder="Last_name"
-                       required="">
-                <input class="text email" type="email" th:field="*{email}" name="email" placeholder="Email"
-                       required="">
-                <input class="text" type="password" th:field="*{password}" name="password" placeholder="Password"
-                       required="">
+<nav class="navbar navbar-expand-lg navbar-light bg-light" >
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img th:src="@{/img/logo/logo.png}"  srwidth="auto" height="40" class="d-inline-block align-top" alt=""/>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-                <input class = "text" type="date" th:field="*{birthDate}"  name="date"/>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto"></ul>
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="fa fa-user nav-link mt-1" th:href="@{/profile}" href="#"></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/catalog}" href="#">shop</a>
+                </li>
 
+                <li  class="nav-item active" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="nav-link" th:href="@{/newItem}" href="#">add new item</a>
+                </li>
+                <li  class="nav-item active" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="nav-link" th:href="@{/stats}" href="#">view sales stats</a>
+                </li>
 
-                <div class="wthree-text">
-                    <label class="anim">
-                        <input type="checkbox" class="checkbox" required="">
-                        <span>I Agree To The Terms & Conditions</span>
-                    </label>
-                    <div class="clear"> </div>
-                </div>
-                <input type="submit" value="SIGNUP">
-            </form>
-            <p>Already have an Account? <a th:href="login"> Login Now!</a></p>
+                <li class="nav-item active">
+                    <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/auth/login}" >login</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/auth/logout}" >logout</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="fa fa-shopping-cart nav-link mt-1 " th:href="@{/cart}" href="#"></a>
+                </li>
+                <li class="nav-item active">
+                    <span class="nav-link badge text-danger  " id="cartCount" th:text="${cartCount}">0</span>
+                </li>
+            </ul>
+
         </div>
     </div>
-    <!-- copyright -->
-    <div class="colorlibcopy-agile">
-        <p>© 2018 Colorlib Signup Form. All rights reserved | Design by <a href="https://colorlib.com/"
-                                                                           target="_blank">Colorlib</a></p>
+</nav>
+<div class="container">
+    <div class="col-sm-6">
+        <h3 style="margin-top: 10px">Sign Up Now</h3>
+        <p>Please fill out this to register</p>
+        <form th:action="@{/auth}" th:object="${client}" method="post">
+            <div class="form-group">
+                <label for="Name">Name</label>
+                <input type="text" name="Name" id="Name" required placeholder="Firstname" class="form-control form-control-lg">
+            </div>
+            <div class="form-group">
+                <label for="Surname">Surname</label>
+                <input type="text" name="Surname" id="Surname" required placeholder="Your Surname" class="form-control form-control-lg">
+            </div>
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" class="form-control form-control-lg" required minlength="6" placeholder="Email" name="email" id="email"
+                       aria-describedby="emailHelp">
+                <small id="emailHelp" class="form-text text-muted">We'll never share your email with
+                    anyone else.</small>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control form-control-lg" required placeholder="Password" name="password"
+                       id="password">
+            </div>
+            <div class="form-group">
+                <label for="birthDate">Password</label>
+                <input type="date" class="form-control form-control-lg" required placeholder="birthDate" name="birthDate"
+                       id="birthDate">
+            </div>
+
+            <input type="submit" value="Register" class="btn btn-primary btn-block">
+            <span style="margin-top: 10px">Already have an account? <a th:href="@{/auth/login}">Login here</a></span>
+        </form>
     </div>
-    <!-- //copyright -->
-    <ul class="colorlib-bubbles">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-    </ul>
 </div>
-<!-- //main -->
+
+<script src="../js/addToCartFunction.js"></script>
 </body>
 
 </html>

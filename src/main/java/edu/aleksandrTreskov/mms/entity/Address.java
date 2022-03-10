@@ -1,6 +1,7 @@
 package edu.aleksandrTreskov.mms.entity;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,6 +16,7 @@ import javax.persistence.JoinColumn;
 @Table(name = "ADDRESS")
 @Entity
 @Data
+@ToString
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

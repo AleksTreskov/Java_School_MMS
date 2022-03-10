@@ -1,43 +1,117 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" >
+<html lang="en" xmlns:th="http://thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script
-            type="application/x-javascript"> addEventListener("load", function () {
-        setTimeout(hideURLbar, 0);
-    }, false);
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Online shop</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
+    <link rel="stylesheet" href="../libs/bootstrap/css/bootstrap.min.css">
 
-    function hideURLbar() {
-        window.scrollTo(0, 1);
-    } </script>
-    <title>Title</title>
-    <link  rel="stylesheet" type="text/css" href="../css/style.css" />
 </head>
 
 <body>
-<div class="main-w3layouts wrapper">
-    <h2>Here is your App's clients </h2>
-
-    <div th:each="item :${items}" >
-        <a th:href="@{/item/{id}(id=${item.getId})}"
-            th:text="${item.getName() + ', ' + item.getPrice()}">
+<nav class="navbar navbar-expand-lg navbar-light bg-light" >
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img th:src="@{/img/logo/logo.png}"  srwidth="auto" height="40" class="d-inline-block align-top" alt=""/>
         </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto"></ul>
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="fa fa-user nav-link mt-1" th:href="@{/profile}" href="#"></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/catalog}" href="#">shop</a>
+                </li>
+
+                <li  class="nav-item active" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="nav-link" th:href="@{/newItem}" href="#">add new item</a>
+                        </li>
+                <li  class="nav-item active" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="nav-link" th:href="@{/stats}" href="#">view sales stats</a>
+                </li>
+
+                <li class="nav-item active">
+                    <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/auth/login}" >login</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/auth/logout}" >logout</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="fa fa-shopping-cart nav-link mt-1 " th:href="@{/cart}" href="#"></a>
+                </li>
+                <li class="nav-item active">
+                    <span class="nav-link badge text-danger  " id="cartCount" th:text="${cartCount}">0</span>
+                </li>
+            </ul>
+
+        </div>
     </div>
+</nav>
+    <header class="header">
+        <div class="container text-center">
+            <img src="../img/logo/logo.png" width="500" height="150" alt="">
+            <div class="display-4">E-shop</div>
+            <p class="lead">Browse our products</p>
+        </div>
+    </header>
+
+                <div class="container" style="margin-top: 30px">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h4>Categories</h4>
+                            <ul class="list-group">
+                                <a th:href="@{/catalog}"><li class="list-group-item">All Products</li></a>
+                                <a href="" th:each="category, iStat : ${categories}"
+                                   th:href="@{/catalog/{category}(category=${category})}"><li
+                                        class="list-group-item" th:text="${category}"></li></a>
+                            </ul>
+                        </div>
+                        <div class="col-sm-9">
+                            <div class="card" style="margin-top: 20px" th:each="item : ${items}">
+                                <div class="row no-gutters">
+                                    <div class="col-sm-5 d-flex justify-content-center">
+                                        <img class="" height="150px" width="150px" th:src="@{${'../img/item/item' + item.getId()+'.jpg'}}" th:alt="${item.name}">
+                                    </div>
+                                    <div class="col-sm-7 d-flex justify-content-center">
+                                        <div class="card-body">
+                                            <h5 class="card-title" th:text="${item.name}"></h5>
+                                            <h4>$ <span th:text="${item.price}"></span></h4>
+                                            <a href="#" th:href="@{/item/{id}(id=${item.id})}" class="btn btn-primary">View Product</a>
+                                            <a class="btn btn-primary" data-action="addToCart" th:onclick="'javascript:addToCart(\'' + ${item.id} + '\');'">Add to
+                                                cart</a>
+                                            <ul class="pagination mt-2">
+                                                <li class="page-item">
+                                                    <button class="page-link" th:onclick="'javascript:addLess(\'' + ${item.id} + '\');'">
+                                                        <span aria-hidden="true">&laquo;</span>
+                                                    </button>
+                                                </li>
+                                                <li class="page-item"><a class="page-link" th:id="${'quantity'+item.id}">1</a></li>
+                                                <li class="page-item">
+                                                    <button class="page-link" th:onclick="'javascript:addMore(\'' + ${item.id} + '\');'">
+                                                        <span aria-hidden="true">&raquo;</span>
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
 
-
-
-    </a>
-    <div sec:authorize="hasRole('ROLE_ADMIN')">
-        <form th:action="@{/newItem}" th:method="GET">
-            <button type="submit">Add new item</button>
-        </form>
-
-    </div>
-
-</div>
+<script src="../js/addToCartFunction.js"></script>
 </body>
+
 </html>

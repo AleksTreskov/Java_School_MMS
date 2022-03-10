@@ -11,7 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -36,19 +35,10 @@ public class ClientService {
         clientRepository.save(client);
     }
 
-    public ClientDTO findById(long id) {
-        Client client = clientRepository.findById(id);
-        return ClientMapper.INSTANCE.toDTO(client);
-    }
-
-    public void deleteClient(long id) {
-        clientRepository.findById(id).setDeleted(true);
-    }
-
     public Map<ClientDTO, Integer> findTop10ByPurchases() {
         Map<ClientDTO, Integer> map = new LinkedHashMap<>();
         List<Client> clients = clientRepository.findTop10ByPurchases();
-        List<Integer> totalPrice = purchaseRepository.findTopPrices();
+        List<Integer> totalPrice = purchaseRepository.findTopPurchasePrices();
         for (int i = 0; i < clients.size(); i++) {
             map.put(ClientMapper.INSTANCE.toDTO(clients.get(i)), totalPrice.get(i));
         }
@@ -57,24 +47,12 @@ public class ClientService {
 
     }
 
-    public ClientDTO findByEmail(String email) {
+    public Client findByEmail(String email) {
         Optional<Client> client = clientRepository.findByEmail(email);
         if (client.isPresent())
-            return ClientMapper.INSTANCE.toDTO(client.get());
+            return client.get();
         throw new NoSuchElementException();
     }
 
-//    public static  Map<ClientDTO, Integer> sortByValue(Map<ClientDTO, Integer> map) {
-//
-//        return map.entrySet()
-//                .stream()
-//                .sorted(Map.Entry.<ClientDTO, Integer>comparingByValue().reversed())
-//                .collect(Collectors.toMap(
-//                        Map.Entry::getKey,
-//                        Map.Entry::getValue,
-//                        (e1, e2) -> e1,
-//                        LinkedHashMap::new
-//                ));
-//    }
-//}
+
 }

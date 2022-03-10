@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html lang="en" xmlns:th="http://thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -12,9 +12,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
 
     <title>Document</title>
-
 </head>
-
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
@@ -47,65 +45,46 @@
                     <a class="fa fa-shopping-cart nav-link " th:href="@{/cart}" href="#"></a>
                 </li>
                 <li class="nav-item active">
-                    <span class="nav-link badge text-danger" id="cartCount" th:text="${cartCount}">0</span>
+                    <span class="nav-link badge text-danger" id="cartCount"  th:text="${cartCount}">0</span>
                 </li>
             </ul>
 
         </div>
     </div>
 </nav>
-
 <div class="container">
-
-    <h1> Stats of your shop</h1>
-    <h2>Top clients</h2>
-    <div id="clientDiv">
-        <table class="table">
+    <h1 th:if="${#lists.isEmpty(purchases)}">You don't have any orders</h1>
+    <h1 th:if="${!#lists.isEmpty(purchases)}">Your orders</h1>
+    <div class="container bg-light">
+        <table class="table" id="ordersTable" th:if="${!#lists.isEmpty(purchases)}">
             <thead>
             <tr>
-                <th scope="col">Client's name</th>
-                <th scope="col">Client's email</th>
-                <th scope="col">Value</th>
-
+                <th  scope="col">Order Id</th>
+                <th scope="col">Status</th>
+                <th scope="col">Items</th>
+                <th scope="col"></th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="entry: ${clients}">
-                <td th:text="${entry.key.name} +' '+ ${entry.key.surname}"></td>
-                <td th:text="${entry.key.email}"></td>
-                <td th:text="${entry.value + '$'}"></td>
-            </tr>
-
-            </tbody>
-        </table>
-    </div>
-
-    <h2>Top sold items</h2>
-    <div id="itemDiv">
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">Item</th>
-                <th scope="col">Price</th>
-                <th scope="col">Sold</th>
-                <th scope="col">Quantity left</th>
-                <th scope="col"> Value</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="item: ${items}">
-                <td><a th:href="@{/item/{id}(id=${item.id})}" th:text="${item.name}"></a></td>
-                <td th:text="${item.price}"></td>
-                <td th:text="${item.sold}"></td>
-                <td th:text="${item.quantity}"></td>
-                <td th:text="${item.sold * item.price}"></td>
+            <tr th:each="purchase : ${purchases}">
+                <td th:text="${purchase.purchase.id}"></td>
+                <td th:text="${purchase.purchase.orderStatus}"></td>
+                <td>
+                    <p th:each="item : ${purchase.cartItems}" >
+                        <a th:href="@{/item/{id}(id=${item.itemDTO.id})}" th:text="${item.itemDTO.name + ' x ' + item.quantity}"></a></p>
+                </td>
+                <td>
+                    <button class="row btn btn-info"
+                            th:onclick="'javascript:repeatOrder(\'' + ${purchase.purchase.id} + '\');'"
+                            type="submit">Repeat order
+                    </button>
+                </td>
             </tr>
             </tbody>
         </table>
     </div>
-
 </div>
-
 <script src="../js/addToCartFunction.js"></script>
+
 </body>
 </html>

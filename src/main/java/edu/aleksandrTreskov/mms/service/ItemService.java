@@ -1,7 +1,6 @@
 package edu.aleksandrTreskov.mms.service;
 
 import edu.aleksandrTreskov.mms.entity.Item;
-import edu.aleksandrTreskov.mms.mapstruct.dto.ClientDTO;
 import edu.aleksandrTreskov.mms.mapstruct.dto.ItemDTO;
 import edu.aleksandrTreskov.mms.mapstruct.mapper.ItemMapper;
 import edu.aleksandrTreskov.mms.repository.ItemRepository;
@@ -41,5 +40,19 @@ public class ItemService {
 
     public ItemDTO getItem(long id) {
         return ItemMapper.INSTANCE.toDTO(itemRepository.findById(id));
+    }
+
+    public List<String> findCategories() {
+        return itemRepository.findAllCategories();
+    }
+
+    public List<ItemDTO> findAllByCategory(String category) {
+        List<ItemDTO> itemDTOS = new ArrayList<>();
+        itemRepository.findAllByCategory(category).forEach(item -> itemDTOS.add(ItemMapper.INSTANCE.toDTO(item)));
+        return itemDTOS;
+    }
+
+    public List<Item> findTop10SoldItems() {
+        return itemRepository.findTop10OrderBySold();
     }
 }
