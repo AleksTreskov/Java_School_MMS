@@ -5,6 +5,8 @@ import edu.aleksandrTreskov.mms.common.PaymentMethod;
 import edu.aleksandrTreskov.mms.common.PaymentStatus;
 import edu.aleksandrTreskov.mms.common.ShipmentMethod;
 import lombok.Data;
+import lombok.ToString;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -16,23 +18,24 @@ import java.util.List;
 @Table(name = "PURCHASE")
 @Entity
 @Data
+@ToString
 public class Purchase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @OneToOne
-    @JoinColumn(name = "client_id", nullable = false)
+    @JoinColumn(name = "client_id" )
     private Client client;
     @OneToOne
-    @JoinColumn(name = "address_id", nullable = false)
+    @JoinColumn(name = "address_id")
     private Address address;
     @Column(name = "total_price")
     private int totalPrice;
-    @Column(name = "date",nullable = false,updatable = false)
-    private LocalDateTime date = LocalDateTime.now();
-    @Column(name = "payment_method", nullable = false)
+    @Column(name = "date_created")
+    private LocalDateTime dateCreated;
+    @Column(name = "payment_method")
     private PaymentMethod paymentMethod;
-    @Column(name = "shipment_method", nullable = false)
+    @Column(name = "shipment_method")
     private ShipmentMethod shipmentMethod;
     @ManyToMany
     @JoinTable(name = "PURCHASE_ITEM",

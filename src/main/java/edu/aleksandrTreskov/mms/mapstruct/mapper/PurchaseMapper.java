@@ -5,13 +5,13 @@ import edu.aleksandrTreskov.mms.mapstruct.dto.PurchaseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(
-        componentModel = "spring"
-)
+//@Mapper(
+//        componentModel = "spring"
+//)
 public interface PurchaseMapper {
-    PurchaseMapper INSTANCE = Mappers.getMapper(PurchaseMapper.class);
-
-    PurchaseDTO toDTO(Purchase purchase);
-
-    Purchase toPurchase(PurchaseDTO purchaseDTO);
+//    PurchaseMapper INSTANCE = Mappers.getMapper(PurchaseMapper.class);
+//
+//    PurchaseDTO toDTO(Purchase purchase);
+//
+//    Purchase toPurchase(PurchaseDTO purchaseDTO);
 }
