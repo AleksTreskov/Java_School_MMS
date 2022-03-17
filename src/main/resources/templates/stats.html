@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+
+    <title>Document</title>
+
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img th:src="@{/img/logo/logo.png}" srwidth="auto" height="40" class="d-inline-block align-top" alt=""/>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto"></ul>
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="fa fa-user nav-link mt-1" th:href="@{/profile}" href="#"></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/catalog}" href="#">shop</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/auth/login}">login</a>
+                </li>
+                <li class="nav-item active">
+
+                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/auth/logout}"
+                       type="submit">logout</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="fa fa-shopping-cart nav-link " th:href="@{/cart}" href="#"></a>
+                </li>
+                <li class="nav-item active">
+                    <span class="nav-link badge text-danger" id="cartCount" th:text="${cartCount}">0</span>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+
+    <h1> Stats of your shop</h1>
+    <h2>Top clients</h2>
+    <div id="clientDiv">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Client's name</th>
+                <th scope="col">Client's email</th>
+                <th scope="col">Value</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="entry: ${clients}">
+                <td th:text="${entry.key.name} +' '+ ${entry.key.surname}"></td>
+                <td th:text="${entry.key.email}"></td>
+                <td th:text="${entry.value + '$'}"></td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <h2>Top sold items</h2>
+    <div id="itemDiv">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Item</th>
+                <th scope="col">Price</th>
+                <th scope="col">Sold</th>
+                <th scope="col">Quantity left</th>
+                <th scope="col"> Value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item: ${items}">
+                <td><a th:href="@{/item/{id}(id=${item.id})}" th:text="${item.name}"></a></td>
+                <td th:text="${item.price}"></td>
+                <td th:text="${item.sold}"></td>
+                <td th:text="${item.quantity}"></td>
+                <td th:text="${item.sold * item.price}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script src="../js/addToCartFunction.js"></script>
+</body>
+</html>

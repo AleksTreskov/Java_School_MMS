@@ -1,6 +1,7 @@
 package edu.aleksandrTreskov.mms.entity;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,6 +16,7 @@ import javax.persistence.JoinColumn;
 @Table(name = "ADDRESS")
 @Entity
 @Data
+@ToString
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,12 +25,12 @@ public class Address {
     private String country;
     @Column(name = "city", nullable = false)
     private String city;
-    @Column(name = "mail_index", nullable = false)
-    private String index;
+    @Column(name = "postcode", nullable = false)
+    private String postcode;
     @Column(name = "street", nullable = false)
     private String street;
-    @Column(name = "house", nullable = false)
-    private String house;
+    @Column(name = "building", nullable = false)
+    private String building;
     @Column(name = "flat")
     private int flat;
     @ManyToOne
@@ -61,12 +63,12 @@ public class Address {
         this.city = city;
     }
 
-    public String getIndex() {
-        return index;
+    public String getPostcode() {
+        return postcode;
     }
 
-    public void setIndex(String index) {
-        this.index = index;
+    public void setPostcode(String index) {
+        this.postcode = index;
     }
 
     public String getStreet() {
@@ -77,12 +79,12 @@ public class Address {
         this.street = street;
     }
 
-    public String getHouse() {
-        return house;
+    public String getBuilding() {
+        return building;
     }
 
-    public void setHouse(String house) {
-        this.house = house;
+    public void setBuilding(String house) {
+        this.building = house;
     }
 
     public int getFlat() {

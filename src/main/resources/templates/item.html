@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Online shop</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css" />
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
+
+    <link rel="stylesheet" href="../libs/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:300,400,400i,700&amp;subset=cyrillic-ext"
+          rel="stylesheet">
+
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img th:src="@{/img/logo/logo.png}" srwidth="auto" height="80" class="d-inline-block align-top" alt=""/>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto"></ul>
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="fa fa-user nav-link mt-1" th:href="@{/profile}" href="#"></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/catalog}" href="#">shop</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/auth/login}">login</a>
+                </li>
+                <li class="nav-item active">
+
+                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/auth/logout}"
+                       type="submit">logout</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="fa fa-shopping-cart nav-link " th:href="@{/cart}" href="#"></a>
+                </li>
+                <li class="nav-item active">
+                    <span class="nav-link badge text-danger  " id="cartCount" th:text="${cartCount}">0</span>
+                </li>>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+<div class="col-md-6">
+    <div class="card mb-4" data-id="${item.id}">
+
+        <img class="product-img" th:src="${'../img/item/item' + item.id + '.jpg'}" alt="">
+        <div class="card-body text-center">
+            <h4 class="item-title"><span th:text="${item.name}" ></span></h4>
+            <p th:text="${item.getName()}"></p>
+            <p th:text=" ${'Category: ' + item.getCategory()}"></p>
+            <p th:text=" ${'Price: ' + item.getPrice()}"></p>
+
+            <p th:text="${'Quantity:' + item.getQuantity()}"></p>
+            <ul>
+                Parameters:
+
+                <li th:each="entry: ${parameters}">
+                    <span th:text="${entry.key}"></span> : <span th:text="${entry.value}"></span>
+                </li>
+            </ul>
+            <div class="details-wrapper">
+                <div class="items counter-wrapper">
+                    <div class="items__control" data-action="minus">-</div>
+                    <div class="items__current" data-counter>1</div>
+                    <div class="items__control" data-action="plus">+</div>
+                </div>
+
+                <div class="price">
+                    <div class="price__currency"><span th:text="${item.price}"></span> $</div>
+                </div>
+            </div>
+
+            <button data-cart type="button" class="btn btn-block btn-outline-warning">Add in
+                cart</button>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
