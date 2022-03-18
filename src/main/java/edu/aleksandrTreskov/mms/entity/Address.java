@@ -3,14 +3,9 @@ package edu.aleksandrTreskov.mms.entity;
 import lombok.Data;
 import lombok.ToString;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Column;
-import javax.persistence.GenerationType;
-import javax.persistence.ManyToOne;
-import javax.persistence.JoinColumn;
+import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 
 @Table(name = "ADDRESS")
@@ -21,21 +16,35 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @NotEmpty(message = "Please provide a country")
     @Column(name = "country", nullable = false)
     private String country;
+
+    @NotEmpty(message = "Please provide a city")
     @Column(name = "city", nullable = false)
     private String city;
+
+    @NotEmpty(message = "Please provide a postcode")
     @Column(name = "postcode", nullable = false)
     private String postcode;
+
+    @NotEmpty(message = "Please provide a street")
     @Column(name = "street", nullable = false)
     private String street;
+
+    @NotEmpty(message = "Please provide a building")
     @Column(name = "building", nullable = false)
     private String building;
+
+    @NotNull(message = "Please provide a flat")
     @Column(name = "flat")
     private int flat;
+
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
+
     @Column(name = "is_deleted")
     private boolean isDeleted = false;
 

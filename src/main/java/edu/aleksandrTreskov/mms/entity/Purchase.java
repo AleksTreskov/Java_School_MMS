@@ -1,6 +1,6 @@
 package edu.aleksandrTreskov.mms.entity;
 
-import edu.aleksandrTreskov.mms.common.OrderStatus;
+import edu.aleksandrTreskov.mms.common.PurchaseStatus;
 import edu.aleksandrTreskov.mms.common.PaymentMethod;
 import edu.aleksandrTreskov.mms.common.PaymentStatus;
 import edu.aleksandrTreskov.mms.common.ShipmentMethod;
@@ -44,13 +44,13 @@ public class Purchase {
     private ShipmentMethod shipmentMethod;
     @ManyToMany
     @JoinTable(name = "PURCHASE_ITEM",
-            joinColumns = @JoinColumn(name = "purchase_id", nullable = false),
-            inverseJoinColumns = @JoinColumn(name = "item_id", nullable = false))
+            joinColumns = @JoinColumn(name = "purchase_id"),
+            inverseJoinColumns = @JoinColumn(name = "item_id"))
     private List<Item> items;
-    @Column(name = "payment_status", nullable = false)
+    @Column(name = "payment_status")
     private PaymentStatus paymentStatus;
-    @Column(name = "purchase_status", nullable = false)
-    private OrderStatus orderStatus;
+    @Column(name = "purchase_status")
+    private PurchaseStatus purchaseStatus;
     @Column(name = "is_deleted")
     private boolean isDeleted = false;
 

@@ -1,8 +1,8 @@
 package edu.aleksandrTreskov.mms.common;
 
 public enum ShipmentMethod {
-    SAMOVYVOZ("Самовывоз"),
-    COURIER("Курьер");
+    BYYOURSELF("Самовывоз"),
+    DELIVERY("Курьер");
     private final String displayValue;
 
      ShipmentMethod(String displayValue) {

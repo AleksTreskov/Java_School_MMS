@@ -2,6 +2,9 @@ package edu.aleksandrTreskov.mms.service;
 
 import edu.aleksandrTreskov.mms.entity.Client;
 import edu.aleksandrTreskov.mms.entity.Role;
+import edu.aleksandrTreskov.mms.exception.EmailAlreadyExistsException;
+import edu.aleksandrTreskov.mms.exception.PasswordsNotMatchException;
+import edu.aleksandrTreskov.mms.mapstruct.dto.ChangePasswordDTO;
 import edu.aleksandrTreskov.mms.mapstruct.dto.ClientDTO;
 import edu.aleksandrTreskov.mms.mapstruct.mapper.ClientMapper;
 import edu.aleksandrTreskov.mms.repository.ClientRepository;
@@ -14,7 +17,7 @@ import java.util.*;
 
 @RequiredArgsConstructor
 @Service
-public class ClientService {
+public class ProfileService {
     private final PurchaseRepository purchaseRepository;
     private final ClientRepository clientRepository;
     private final PasswordEncoder passwordEncoder;
@@ -29,7 +32,7 @@ public class ClientService {
 
     public void saveClient(Client client) {
         if (clientRepository.findByEmail(client.getEmail()).isPresent())
-            throw new IllegalArgumentException("User with that email already exists");
+            throw new EmailAlreadyExistsException("user with that email already exists.");
         client.setRole(new Role(2, "ROLE_USER"));
         client.setPassword(passwordEncoder.encode(client.getPassword()));
         clientRepository.save(client);
@@ -55,4 +58,20 @@ public class ClientService {
     }
 
 
+    public void updateClient(ClientDTO clientDTO, Client client) {
+        client.setSurname(clientDTO.getSurname());
+        client.setName(clientDTO.getName());
+        clientRepository.save(client);
+
+    }
+
+    public void updatePassword(ChangePasswordDTO changePasswordDTO, Client client) throws PasswordsNotMatchException {
+        if (passwordEncoder.matches(changePasswordDTO.getCurrPassword(), client.getPassword())) {
+            client.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
+            clientRepository.save(client);
+        } else {
+            throw new PasswordsNotMatchException("Wrong password");
+        }
+
+    }
 }

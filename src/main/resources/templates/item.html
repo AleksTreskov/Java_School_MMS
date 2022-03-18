@@ -5,24 +5,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Online shop</title>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"/>
     <!-- Google Fonts Roboto -->
     <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
+          href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap"/>
 
     <link rel="stylesheet" href="../libs/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/main.css">
     <link href="https://fonts.googleapis.com/css?family=Merriweather:300,400,400i,700&amp;subset=cyrillic-ext"
           rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css
+">
 </head>
 
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-            <img th:src="@{/img/logo/logo.png}" srwidth="auto" height="80" class="d-inline-block align-top" alt=""/>
-        </a>
+
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -34,8 +33,15 @@
                 <li class="nav-item active">
                     <a class="fa fa-user nav-link mt-1" th:href="@{/profile}" href="#"></a>
                 </li>
+
                 <li class="nav-item active">
                     <a class="nav-link" th:href="@{/catalog}" href="#">shop</a>
+                </li>
+                <li class="nav-item active" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="nav-link" th:href="@{/newItem}" href="#">add new item</a>
+                </li>
+                <li class="nav-item active" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="nav-link" th:href="@{/stats}" href="#">view sales stats</a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/auth/login}">login</a>
@@ -46,52 +52,151 @@
                        type="submit">logout</a>
                 </li>
                 <li class="nav-item active">
+                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/purchases}" href="#">purchases</a>
+                </li>
+                <li class="nav-item active">
                     <a class="fa fa-shopping-cart nav-link " th:href="@{/cart}" href="#"></a>
                 </li>
                 <li class="nav-item active">
-                    <span class="nav-link badge text-danger  " id="cartCount" th:text="${cartCount}">0</span>
-                </li>>
+                    <span class="nav-link badge text-danger" id="cartCount" th:text="${cartCount}">0</span>
+                </li>
             </ul>
 
         </div>
     </div>
 </nav>
-<div class="col-md-6">
-    <div class="card mb-4" data-id="${item.id}">
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-sm-5 d-flex justify-content-center">
+            <img class="product-img" th:src="${'../img/item/item' + item.id + '.jpg'}" alt="">
+        </div>
+        <div class="col-sm-7 mt-5">
 
-        <img class="product-img" th:src="${'../img/item/item' + item.id + '.jpg'}" alt="">
-        <div class="card-body text-center">
-            <h4 class="item-title"><span th:text="${item.name}" ></span></h4>
-            <p th:text="${item.getName()}"></p>
-            <p th:text=" ${'Category: ' + item.getCategory()}"></p>
-            <p th:text=" ${'Price: ' + item.getPrice()}"></p>
 
-            <p th:text="${'Quantity:' + item.getQuantity()}"></p>
-            <ul>
-                Parameters:
+            <h2 th:text="${item.name}" th:id="${'name'+item.id}"></h2>
+            <p th:text="${item.category}" th:id="${'category'+item.id}"></p>
+            <h2>$ <span th:text="${item.price}" th:id="${'price'+item.id}"></span></h2>
+            <h2 th:if="${item.quantity==0}">Out of stock</h2>
+            <p th:text="${'Quantity left :  ' + item.quantity}" th:id="${'amount'+item.id}"
+               sec:authorize="hasRole('ROLE_ADMIN')">Quantity
+                left</p>
+            <p th:text="${'Sold : ' + item.sold}" th:id="${'sold'+item.id}" sec:authorize="hasRole('ROLE_ADMIN')">
+                Sold</p>
+            <p th:text="${'Brand : ' + item.brand}" th:id="${'brand'+item.id}">Brand</p>
+            <p th:text="${'Model : ' + item.model}" th:id="${'model'+item.id}">Model</p>
+            <p th:text="${'Weight : ' + item.weight + 'kg'}" th:id="${'weight'+item.id}">Weight</p>
 
-                <li th:each="entry: ${parameters}">
-                    <span th:text="${entry.key}"></span> : <span th:text="${entry.value}"></span>
-                </li>
-            </ul>
-            <div class="details-wrapper">
-                <div class="items counter-wrapper">
-                    <div class="items__control" data-action="minus">-</div>
-                    <div class="items__current" data-counter>1</div>
-                    <div class="items__control" data-action="plus">+</div>
+
+            <div class="d-flex">
+
+                <div id="addToCart">
+                    <div th:if="${item.quantity!=0}">
+                        <a class="btn btn-primary btn-info" data-action="addToCart"
+                           th:onclick="'javascript:addToCart(\'' + ${item.id} + '\');'">Add to
+                            cart</a>
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <button class="page-link"
+                                        th:onclick="'javascript:addLess(\'' + ${item.id} + '\');'">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </button>
+                            </li>
+                            <li class="page-item"><a class="page-link" th:id="${'quantity'+item.id}">1</a></li>
+                            <li class="page-item">
+                                <button class="page-link"
+                                        th:onclick="'javascript:addMore(\'' + ${item.id} + '\');'">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-
-                <div class="price">
-                    <div class="price__currency"><span th:text="${item.price}"></span> $</div>
-                </div>
+                <button data-cart type="button" id="editItemButton" sec:authorize="hasRole('ROLE_ADMIN')"
+                        class="btn btn-primary btn-warning ml-2 h-25"
+                        th:onclick="'javascript:editItem(\'' + ${item.id} + '\');'">Edit item
+                </button>
+                <form th:action="@{/item/{id}(id=${item.id})}" th:method="delete">
+                    <button data-cart type="submit" sec:authorize="hasRole('ROLE_ADMIN')"
+                            class="btn btn-primary btn-danger ml-2">Delete item
+                    </button>
+                </form>
             </div>
+        </div>
+        <h5>About</h5>
+        <p th:text="${item.description}" th:id="${'description'+item.id}"></p>
+    </div>
+    <div id="editItemForm" style="display: none">
+        <div class="form-row">
+            <div class="col">
+                <label class="col-sm-2 col-form-label" for="name">Name</label>
+                <input class="form-control" id="name" name="name" placeholder="name" required=""
+                       type="text">
+            </div>
+            <div class="col">
+                <label class="col-sm-2 col-form-label" for="category">Category</label>
+                <input class="form-control" id="category" name="category" placeholder="Category" required=""
+                       type="text">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col">
+                <label class="col-sm-2 col-form-label" for="quantity">Quantity</label>
+                <input class="form-control" id="quantity" name="quantity" placeholder="Quantity left"
+                       required=""
+                       type="number">
+            </div>
+            <div class="col">
+                <label class="col-sm-2 col-form-label" for="price">Price</label>
+                <input class="form-control" step="any" id="price" name="price" placeholder="Price"
+                       type="number">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col">
+                <label class="col-sm-2 col-form-label" for="description">Description</label>
+                <textarea class="form-control" id="description" name="description" placeholder="description" required=""
+                          type="text"></textarea>
+            </div>
+            <div class="col">
+                <label class="col-sm-2 col-form-label" for="brand">Brand</label>
+                <input class="form-control" id="brand" name="brand" placeholder="brand" required=""
+                       type="text">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col">
+                <label class="col-sm-2 col-form-label" for="model">Model</label>
+                <input class="form-control" id="model" name="model" placeholder="model" required=""
+                       type="text">
+            </div>
+            <div class="col">
+                <label class="col-sm-2 col-form-label" for="weight">Weight</label>
+                <input class="form-control"  step="any" id="weight" name="weight" placeholder="weight" required=""
+                       type="number">
+            </div>
+        </div>
+        <!--        <div class="col">-->
+        <!--            <label class="col-sm-2 col-form-label" for="sold">Sold</label>-->
+        <!--            <input class="form-control" id="sold" name="sold" placeholder="Sold pcs" required=""-->
+        <!--                   type="number">-->
+        <!--        </div>-->
 
-            <button data-cart type="button" class="btn btn-block btn-outline-warning">Add in
-                cart</button>
 
+        <div class="form-group row">
+
+            <button class="m-2 btn btn-success col-sm-2" id="saveEditItemButton"
+                    type="button">Save Edit
+            </button>
         </div>
     </div>
+
 </div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<script src="../js/editItemFunction.js"></script>
+<script src="../js/addToCartFunction.js"></script>
 
 </body>
 </html>

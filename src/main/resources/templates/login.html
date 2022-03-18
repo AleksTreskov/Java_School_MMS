@@ -19,9 +19,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light" >
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-            <img th:src="@{/img/logo/logo.png}"  srwidth="auto" height="40" class="d-inline-block align-top" alt=""/>
-        </a>
+
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -63,7 +61,7 @@
 
     <div class="container">
         <div class="col-sm-6">
-            <h3 style="margin-top: 10px">Sign Up Now</h3>
+            <h3 style="margin-top: 10px">Login Now</h3>
             <form method="post" th:action="@{/auth/login}">
                 <div class="form-group">
                     <label for="email">Email</label>
@@ -81,7 +79,7 @@
                 <input type="submit" value="Login" class="btn btn-primary btn-block">
                 <br>
                     <p>Don't have an Account?
-                        <a  th:href="@{/signup}"> Sign up Now!</a>
+                        <a  th:href="@{/auth/signup}"> Sign up Now!</a>
                     </p>
 
             </form>

@@ -15,3 +15,15 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
+  output:
+    ansi:
+      enabled: always
+logging:
+  level:
+    org.springframework.web: ERROR
+    ru.leodev: DEBUG
+  pattern:
+
+    file: "%d{yyyy-MM-dd HH:mm:ss} - [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: C:\java\Java_School_MMS\src\main\resources\app.log

@@ -1,13 +1,11 @@
 package edu.aleksandrTreskov.mms.service;
 
-import edu.aleksandrTreskov.mms.common.OrderStatus;
 import edu.aleksandrTreskov.mms.common.PaymentStatus;
+import edu.aleksandrTreskov.mms.common.PurchaseStatus;
+import edu.aleksandrTreskov.mms.entity.Address;
 import edu.aleksandrTreskov.mms.entity.Item;
 import edu.aleksandrTreskov.mms.entity.Purchase;
-import edu.aleksandrTreskov.mms.mapstruct.dto.Cart;
-import edu.aleksandrTreskov.mms.mapstruct.dto.CartItem;
-import edu.aleksandrTreskov.mms.mapstruct.dto.PurchaseDTO;
-import edu.aleksandrTreskov.mms.mapstruct.dto.PurchaseInfo;
+import edu.aleksandrTreskov.mms.mapstruct.dto.*;
 import edu.aleksandrTreskov.mms.mapstruct.mapper.ItemMapper;
 import edu.aleksandrTreskov.mms.repository.AddressRepository;
 import edu.aleksandrTreskov.mms.repository.ItemRepository;
@@ -47,7 +45,8 @@ public class PurchaseService {
     }
 
     public void savePurchase(Cart cart, PurchaseInfo purchaseInfo, Purchase purchase) {
-        purchase.setAddress(addressRepository.findById(purchaseInfo.getAddressId()));
+        Optional<Address> address = addressRepository.findById(purchaseInfo.getAddressId());
+        address.ifPresent(purchase::setAddress);
 
         List<Item> items = new ArrayList<>();
         for (CartItem cartItem : cart.getCartItems()) {
@@ -61,7 +60,7 @@ public class PurchaseService {
         purchase.setItems(items);
         purchase.setPaymentMethod(purchaseInfo.getPaymentMethod());
         purchase.setShipmentMethod(purchaseInfo.getDeliveryMethod());
-        purchase.setOrderStatus(OrderStatus.WAITINGFORSHIPMENT);
+        purchase.setPurchaseStatus(PurchaseStatus.WAITINGFORSHIPMENT);
         purchase.setPaymentStatus(PaymentStatus.PAID);
         purchase.setDeleted(false);
         int totalPrice = 0;
@@ -93,5 +92,18 @@ public class PurchaseService {
     }
 
 
+    public void changePurchaseStatus(PurchaseStatusInfo purchaseStatusInfo) {
+        Optional<Purchase> optPurchase = purchaseRepository.findById(purchaseStatusInfo.getPurchaseId());
+        if (optPurchase.isPresent()) {
+            Purchase purchase = optPurchase.get();
+            purchase.setPurchaseStatus(purchaseStatusInfo.getPurchaseStatus());
+            purchaseRepository.save(purchase);
+        }
+
+    }
+
+    public List<Purchase> findPurchasesForThisMonth(int month) {
+        return purchaseRepository.findPurchasesInMonth(month);
+    }
 }
 
