@@ -11,7 +11,7 @@
           href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
 
     <link rel="stylesheet" href="../libs/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css&js/css/main.css">
     <link href="https://fonts.googleapis.com/css?family=Merriweather:300,400,400i,700&amp;subset=cyrillic-ext"
           rel="stylesheet">
 </head>
@@ -19,9 +19,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light" >
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-            <img th:src="@{/img/logo/logo.png}"  srwidth="auto" height="40" class="d-inline-block align-top" alt=""/>
-        </a>
+
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -63,7 +61,7 @@
 
     <div class="container">
         <div class="col-sm-6">
-            <h3 style="margin-top: 10px">Sign Up Now</h3>
+            <h3 style="margin-top: 10px">Login Now</h3>
             <form method="post" th:action="@{/auth/login}">
                 <div class="form-group">
                     <label for="email">Email</label>
@@ -77,11 +75,10 @@
                 <div th:if="${param.error}" class="alert alert-error text-danger">
                     Invalid username or password.
                 </div>
-               <br>
                 <input type="submit" value="Login" class="btn btn-primary btn-block">
                 <br>
                     <p>Don't have an Account?
-                        <a  th:href="@{/signup}"> Sign up Now!</a>
+                        <a  th:href="@{/auth/signup}"> Sign up Now!</a>
                     </p>
 
             </form>
@@ -89,7 +86,7 @@
         </div>
 
     </div>
-<script src="../js/addToCartFunction.js"></script>
+<script src="../css&js/js/addToCartFunction.js"></script>
 </body>
 
 </html>

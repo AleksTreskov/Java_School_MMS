@@ -6,19 +6,17 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css&js/css/main.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <title>Document</title>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-            <img th:src="@{/img/logo/logo.png}" srwidth="auto" height="40" class="d-inline-block align-top" alt=""/>
-        </a>
+
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -30,8 +28,15 @@
                 <li class="nav-item active">
                     <a class="fa fa-user nav-link mt-1" th:href="@{/profile}" href="#"></a>
                 </li>
+
                 <li class="nav-item active">
                     <a class="nav-link" th:href="@{/catalog}" href="#">shop</a>
+                </li>
+                <li class="nav-item active" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="nav-link" th:href="@{/newItem}" href="#">add new item</a>
+                </li>
+                <li class="nav-item active" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="nav-link" th:href="@{/stats}" href="#">view sales stats</a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/auth/login}">login</a>
@@ -42,24 +47,30 @@
                        type="submit">logout</a>
                 </li>
                 <li class="nav-item active">
+                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/purchases}" href="#">purchases</a>
+                </li>
+                <li class="nav-item active">
                     <a class="fa fa-shopping-cart nav-link " th:href="@{/cart}" href="#"></a>
                 </li>
                 <li class="nav-item active">
-                    <span class="nav-link badge text-danger" id="cartCount"  th:text="${cartCount}">0</span>
+                    <span class="nav-link badge text-danger" id="cartCount" th:text="${cartCount}">0</span>
                 </li>
             </ul>
-
         </div>
     </div>
 </nav>
 <div class="container">
+    <a th:href="@{/purchases/all}"> <button class="m-2 btn btn-primary " id="editMainButton" type="button"  sec:authorize="hasRole('ROLE_ADMIN')" >
+       Check your clients purchases
+
+    </button></a>
     <h1 th:if="${#lists.isEmpty(purchases)}">You don't have any orders</h1>
     <h1 th:if="${!#lists.isEmpty(purchases)}">Your orders</h1>
     <div class="container bg-light">
         <table class="table" id="ordersTable" th:if="${!#lists.isEmpty(purchases)}">
             <thead>
             <tr>
-                <th  scope="col">Order Id</th>
+                <th scope="col">Order Id</th>
                 <th scope="col">Status</th>
                 <th scope="col">Items</th>
                 <th scope="col"></th>
@@ -68,23 +79,20 @@
             <tbody>
             <tr th:each="purchase : ${purchases}">
                 <td th:text="${purchase.purchase.id}"></td>
-                <td th:text="${purchase.purchase.orderStatus}"></td>
+                <td th:text="${purchase.purchase.purchaseStatus}"></td>
                 <td>
-                    <p th:each="item : ${purchase.cartItems}" >
-                        <a th:href="@{/item/{id}(id=${item.itemDTO.id})}" th:text="${item.itemDTO.name + ' x ' + item.quantity}"></a></p>
+                    <p th:each="item : ${purchase.cartItems}">
+                        <a th:href="@{/item/{id}(id=${item.itemDTO.id})}"
+                           th:text="${item.itemDTO.name + ' x ' + item.quantity}"></a></p>
                 </td>
                 <td>
-                    <button class="row btn btn-info"
-                            th:onclick="'javascript:repeatOrder(\'' + ${purchase.purchase.id} + '\');'"
-                            type="submit">Repeat order
-                    </button>
+                    <a href="#" th:href="@{/purchases/repeat/{id}(id=${purchase.purchase.id})}" id="repeatPurchaseHref" class="btn btn-primary">Repeat Purchase</a>
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
 </div>
-<script src="../js/addToCartFunction.js"></script>
-
+<script src="../css&js/js/addToCartFunction.js"></script>
 </body>
 </html>

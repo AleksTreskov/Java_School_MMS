@@ -1,33 +1,244 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://thymeleaf.org">
+<html lang="en" xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script
-            type="application/x-javascript"> addEventListener("load", function () {
-        setTimeout(hideURLbar, 0);
-    }, false);
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css&js/css/main.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 
-    function hideURLbar() {
-        window.scrollTo(0, 1);
-    } </script>
-    <title>Title</title>
-    <link  rel="stylesheet" type="text/css" href="../css/style.css" />
+    <title>Document</title>
 </head>
 <body>
-<div class="main-w3layouts wrapper" th:object="${client}">
-    <p class="text" th:text="${client.name}"></p>
-    <p class="text" th:text="${client.surname}"></p>
-    <p class="text" th:text="${client.email}"></p>
-    <p class="text" th:text="${client.birthDate}"></p>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
 
-<form th:method="get" th:action="@{/addresses}">
-    <button type="submit">Addresses</button>
-</form>
-    <form action="/auth/logout" method="POST">
-        <button type="submit">Logout</button>
-    </form>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto"></ul>
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="fa fa-user nav-link mt-1" th:href="@{/profile}" href="#"></a>
+                </li>
+
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/catalog}" href="#">shop</a>
+                </li>
+                <li class="nav-item active" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="nav-link" th:href="@{/newItem}" href="#">add new item</a>
+                </li>
+                <li class="nav-item active" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="nav-link" th:href="@{/stats}" href="#">view sales stats</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/auth/login}">login</a>
+                </li>
+                <li class="nav-item active">
+
+                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/auth/logout}"
+                       type="submit">logout</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/purchases}" href="#">purchases</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="fa fa-shopping-cart nav-link " th:href="@{/cart}" href="#"></a>
+                </li>
+                <li class="nav-item active">
+                    <span class="nav-link badge text-danger" id="cartCount" th:text="${cartCount}">0</span>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <h1>Your profile settings</h1>
+    <div class="container bg-light">
+        <h2>Main settings</h2>
+        <!--        <form id="mainSettingsForm">-->
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="firstName">First name</label>
+            <div class="col-sm-10">
+                <input class="form-control-plaintext" id="firstName" name="firstName" readonly
+                       th:value="${client.name}"
+                       type="text">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="lastName">Last name</label>
+            <div class="col-sm-10">
+                <input class="form-control-plaintext" id="lastName" name="lastName" readonly
+                       th:value="${client.surname}"
+                       type="text">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="birthDate">Birthday</label>
+            <div class="col-sm-10">
+                <input class="form-control-plaintext" id="birthDate" name="birthDate" readonly
+                       th:value="${client.birthDate}"
+                       type="date">
+            </div>
+        </div>
+        <div class="form-group row">
+            <button class="m-2 btn btn-primary col-sm-2" id="editMainButton" onclick="editMain()" type="button">
+                Edit
+            </button>
+
+            <button class="m-2 btn btn-success col-sm-2" id="saveMainButton" onclick="saveMainEdit()"
+                    style="display: none;"
+                    type="button">Save
+            </button>
+        </div>
+        <!--        </form>-->
+        <div class="dropdown-divider"></div>
+        <h2>Password settings</h2>
+        <br>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="currentPassword" id="currentPasswordLabel"
+                   style="display: none;">Current password</label>
+            <div class="col-sm-10">
+                <input class="form-control" id="currentPassword" name="password" placeholder="Password"
+                       style="display: none;" type="password">
+            </div>
+            <label class="col-sm-2 col-form-label" for="newPassword" id="newPasswordLabel" style="display: none;">New
+                password</label>
+            <div class="col-sm-10">
+                <input class="form-control" id="newPassword" name="newPassword" placeholder="Password"
+                       style="display: none;" type="password">
+            </div>
+        </div>
+        <div class="form-group row">
+            <button class="m-2 btn btn-primary col-sm-2" id="editPasswordButton" onclick="editPassword()"
+                    type="button">Change password
+            </button>
+            <button class="m-2 btn btn-success col-sm-2" id="savePasswordButton" onclick="savePasswordEdit()"
+                    style="display: none;" type="submit">Save
+            </button>
+        </div>
+        <div class="dropdown-divider"></div>
+        <h2>Your Email</h2>
+        <br>
+        <form>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="email">E-mail</label>
+                <div class="col-sm-10">
+                    <input class="form-control-plaintext" id="email" name="email" readonly th:value="${client.email}"
+                           type="text">
+                </div>
+            </div>
+        </form>
+        <div class="dropdown-divider"></div>
+        <h2>Addresses settings</h2>
+        <br>
+        <h3 th:if="${#lists.isEmpty(addresses)}">You don't have any addresses</h3>
+        <h3 th:if="${!#lists.isEmpty(addresses)}">Your addresses</h3>
+        <table class="table" id="addressTable" th:if="${!#lists.isEmpty(addresses)}">
+            <thead>
+            <tr>
+                <th scope="col">Country</th>
+                <th scope="col">City</th>
+                <th scope="col">Street</th>
+                <th scope="col">Building</th>
+                <th scope="col">Flat</th>
+                <th scope="col">Postcode</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="address : ${addresses}" th:id="${'row' + address.id}">
+                <td th:text="${address.country}" th:id="${'country'+address.id}"></td>
+                <td th:text="${address.city}" th:id="${'city'+address.id}"></td>
+                <td th:text="${address.street}" th:id="${'street'+address.id}"></td>
+                <td th:text="${address.building}" th:id="${'building'+address.id}"></td>
+                <td th:text="${address.flat}" th:id="${'flat'+address.id}"></td>
+                <td th:text="${address.postcode}" th:id="${'postcode'+address.id}"></td>
+                <td>
+                    <button class="row btn btn-primary"
+                            th:onclick="'javascript:editAddress(\'' + ${address.id} + '\');'"
+                            type="button">Edit
+                    </button>
+                </td>
+                <td>
+                    <button class="row btn btn-danger"
+                            th:onclick="'javascript:deleteAddress(\'' + ${address.id} + '\');'"
+                            type="button">Delete
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <form id="newAddress">
+            <div id="newAddressForm" style="display: none">
+
+                <div class="form-row">
+                    <div class="col">
+                        <label class="col-sm-2 col-form-label" for="country">Country</label>
+                        <input class="form-control" id="country" name="country" placeholder="Country" required=""
+                               type="text">
+                    </div>
+                    <div class="col">
+                        <label class="col-sm-2 col-form-label" for="city">City</label>
+                        <input class="form-control" id="city" name="city" placeholder="City" required="" type="text">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col">
+                        <label class="col-sm-2 col-form-label" for="street">Street</label>
+                        <input class="form-control" id="street" name="street" placeholder="Street" required=""
+                               type="text">
+                    </div>
+                    <div class="col">
+                        <label class="col-sm-2 col-form-label" for="building">Building</label>
+                        <input class="form-control" id="building" name="building" placeholder="Building" type="text">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col">
+                        <label class="col-sm-2 col-form-label" for="flat">Flat</label>
+                        <input class="form-control" id="flat" name="flat" placeholder="Flat"
+                               type="number">
+                    </div>
+                    <div class="col">
+                        <label class="col-sm-2 col-form-label" for="postcode">Postcode</label>
+                        <input class="form-control" id="postcode" name="postcode" placeholder="Postcode" required=""
+                               type="text">
+                    </div>
+                </div>
+
+            </div>
+        </form>
+        <div class="form-group row">
+            <button class="m-2 btn btn-primary col-sm-2" id="addNewAddressButton" onclick="addAddress()"
+                    type="button">Add new address
+            </button>
+            <button class="m-2 btn btn-success col-sm-2" id="saveNewAddressButton" onclick="saveNewAddress()"
+                    style="display: none" type="button">Save Address
+            </button>
+            <button class="m-2 btn btn-success col-sm-2" id="saveEditAddressButton" style="display: none"
+                    type="button">Save Edit
+            </button>
+        </div>
+        </form>
+    </div>
+
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="../css&js/js/profileSettings.js"></script>
 </body>
 </html>
