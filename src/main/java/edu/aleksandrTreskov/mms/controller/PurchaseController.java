@@ -1,9 +1,10 @@
 package edu.aleksandrTreskov.mms.controller;
 
 import edu.aleksandrTreskov.mms.entity.Purchase;
-import edu.aleksandrTreskov.mms.mapstruct.dto.Cart;
-import edu.aleksandrTreskov.mms.mapstruct.dto.PurchaseInfo;
-import edu.aleksandrTreskov.mms.mapstruct.dto.PurchaseStatusInfo;
+import edu.aleksandrTreskov.mms.dto.Cart;
+import edu.aleksandrTreskov.mms.dto.PurchaseInfo;
+import edu.aleksandrTreskov.mms.dto.PurchaseStatusInfo;
+import edu.aleksandrTreskov.mms.dto.ResponseAttribute;
 import edu.aleksandrTreskov.mms.service.AddressService;
 import edu.aleksandrTreskov.mms.service.CartService;
 import edu.aleksandrTreskov.mms.service.ProfileService;
@@ -26,7 +27,9 @@ public class PurchaseController {
     private final AddressService addressService;
 
     @GetMapping("/purchases/all")
-    public String findAllPurchases(Model model) {
+    public String findAllPurchases(Model model, HttpSession session) {
+        Cart cart = (Cart) session.getAttribute("cart");
+        model.addAttribute("cartCount", cartService.countItemsInCart(cart));
         model.addAttribute("purchases", purchaseService.getAllPurchases());
         return "adminPurchases";
     }
@@ -52,20 +55,20 @@ public class PurchaseController {
         int totalPrice = cartService.countTotalPriceInCart(cart);
         model.addAttribute("total", totalPrice);
         model.addAttribute("addresses", addressService.findAllAddressesByEmail(principal.getName()));
-        model.addAttribute("cartCount", cart.getCartItems().size());
+        model.addAttribute("cartCount", cartService.countItemsInCart(cart));
         model.addAttribute("cart", cart);
         return "checkout";
     }
 
-
+    @ResponseBody
     @PostMapping("/checkout/confirm")
-    public String savePurchase(@RequestBody PurchaseInfo purchaseInfo, HttpSession session, Principal principal) {
+    public ResponseAttribute savePurchase(@RequestBody PurchaseInfo purchaseInfo, HttpSession session, Principal principal) {
         Cart cart = (Cart) session.getAttribute("cart");
         Purchase purchase = new Purchase();
         purchase.setClient(profileService.findByEmail(principal.getName()));
         purchaseService.savePurchase(cart, purchaseInfo, purchase);
         session.setAttribute("cart", new Cart());
-        return "redirect:/profile";
+        return ResponseAttribute.builder().error(false).build();
     }
 
     @GetMapping("/purchases/repeat/{id}")

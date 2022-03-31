@@ -1,8 +1,8 @@
 package edu.aleksandrTreskov.mms.controller;
 
+import edu.aleksandrTreskov.mms.dto.Cart;
+import edu.aleksandrTreskov.mms.dto.ItemDTO;
 import edu.aleksandrTreskov.mms.entity.Item;
-import edu.aleksandrTreskov.mms.mapstruct.dto.Cart;
-import edu.aleksandrTreskov.mms.mapstruct.dto.ItemDTO;
 import edu.aleksandrTreskov.mms.mapstruct.mapper.ItemMapper;
 import edu.aleksandrTreskov.mms.service.CartService;
 import edu.aleksandrTreskov.mms.service.ItemService;
@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -21,27 +22,25 @@ public class ItemController {
     private final ItemService itemService;
     private final CartService cartService;
 
-
     @GetMapping("/{category}/{pageNo}")
     public String filterByCategory(@PathVariable("category") String category, @PathVariable("pageNo") int pageNo, @RequestParam("sortField") String sortField,
                                    @RequestParam("sortDir") String sortDir, Model model, HttpSession session) {
         int pageSize = 7;
         loadNavAttributesForItemsModel(model, session);
         model.addAttribute("chosenCategory", category);
-        Page<Item> page = itemService.findPaginatedCategory(pageNo, pageSize, sortField, sortDir,category);
-        List<Item> items = page.getContent();
-        model.addAttribute("currentPage", pageNo);
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("sortDirection", sortDir);
-        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
-        model.addAttribute("items", items);
-        return "items";
+        Page<Item> page = itemService.findPaginatedCategory(pageNo, pageSize, sortField, sortDir, category);
+        return getPageContent(pageNo, sortField, sortDir, model, page);
     }
 
+
+
     @PostMapping("/newItem/add")
-    public String saveItem(@ModelAttribute Item item) {
+    public String saveItem(@ModelAttribute Item item, @RequestParam("productImage") MultipartFile file) {
+        String img = file.getOriginalFilename();
+
+        item.setImgName(img);
         itemService.saveItem(item);
+
         return "redirect:/catalog";
     }
 
@@ -53,6 +52,14 @@ public class ItemController {
         model.addAttribute("categories", itemService.findCategories());
 
         return "newItem";
+    }
+
+    @GetMapping("/catalog/search")
+    public String searchByWord(@RequestParam("searchText") String searchText, Model model, HttpSession session) {
+        loadNavAttributesForItemsModel(model, session);
+        model.addAttribute("items", itemService.searchByText(searchText));
+        return "items";
+
     }
 
     @GetMapping({"/", "/catalog"})
@@ -70,6 +77,10 @@ public class ItemController {
     @GetMapping("/item/{id}")
     public String findItemById(@PathVariable long id, Model model, HttpSession session) {
         Cart cart = (Cart) session.getAttribute("cart");
+        if (cart == null) {
+            cart = new Cart();
+            session.setAttribute("cart", cart);
+        }
         model.addAttribute("item", itemService.findById(id));
         model.addAttribute("cartCount", cartService.countItemsInCart(cart));
 
@@ -106,14 +117,7 @@ public class ItemController {
         int pageSize = 7;
         loadNavAttributesForItemsModel(model, session);
         Page<Item> page = itemService.findPaginated(pageNo, pageSize, sortField, sortDir);
-        List<Item> items = page.getContent();
-        model.addAttribute("currentPage", pageNo);
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("sortDirection", sortDir);
-        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
-        model.addAttribute("items", items);
-        return "items";
+        return getPageContent(pageNo, sortField, sortDir, model, page);
     }
 
     public void loadNavAttributesForItemsModel(Model model, HttpSession session) {
@@ -125,5 +129,15 @@ public class ItemController {
         model.addAttribute("cartCount", cartService.countItemsInCart(cart));
         model.addAttribute("categories", itemService.findCategories());
 
+    }
+    private String getPageContent(int pageNo, String sortField, String sortDir, Model model, Page<Item> page) {
+        List<Item> items = page.getContent();
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDirection", sortDir);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+        model.addAttribute("items", items);
+        return "items";
     }
 }

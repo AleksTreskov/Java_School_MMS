@@ -1,8 +1,8 @@
 package edu.aleksandrTreskov.mms.controller;
 
-import edu.aleksandrTreskov.mms.mapstruct.dto.AddItemToCart;
-import edu.aleksandrTreskov.mms.mapstruct.dto.Cart;
-import edu.aleksandrTreskov.mms.mapstruct.dto.ResponseAttribute;
+import edu.aleksandrTreskov.mms.dto.AddItemToCart;
+import edu.aleksandrTreskov.mms.dto.Cart;
+import edu.aleksandrTreskov.mms.dto.ResponseAttribute;
 import edu.aleksandrTreskov.mms.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

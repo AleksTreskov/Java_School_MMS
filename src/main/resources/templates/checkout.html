@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css
 ">
+    <link rel="stylesheet" href="../css&js/css/main.css">
     <title>Document</title>
 </head>
 <body>
@@ -155,6 +156,7 @@
     </div>
 
     <div id="paymentDiv" style="display: none">
+
         <div class="input-group mb-3">
             <div class="input-group-prepend">
                 <label class="input-group-text" for="deliveryMethod">Delivery Options</label>
@@ -170,23 +172,65 @@
             <div class="input-group-prepend">
                 <label class="input-group-text" for="paymentMethod">Payment Options</label>
             </div>
-            <select class="custom-select" id="paymentMethod">
+            <select class="custom-select" id="paymentMethod" onchange="onChangePayment()" onload="onChangePayment()">
                 <option th:each="method : ${T(edu.aleksandrTreskov.mms.common.PaymentMethod).values()}"
                         th:text="${method.displayValue}"
                         th:value="${method}"></option>
             </select>
         </div>
+        <form class="creditCardForm" id="creditCardForm" style="margin-top: 20px; margin-bottom: 20px; display: none">
+            <div class="form-group owner">
+                <label for="owner">Owner</label>
+                <input class="form-control" id="owner" name="creditCardOwner" type="text">
+            </div>
+            <div class="form-group CVV">
+                <label for="cvv">CVV</label>
+                <input class="form-control" data-inputmask="'mask': '999'" id="cvv" name="creditCardCvv" type="text">
+            </div>
+            <div class="form-group" id="card-number-field">
+                <label for="cardNumber">Card Number</label>
+                <input class="form-control" data-inputmask="'mask': '9999999999999999'" id="cardNumber"
+                       name="cardNumber"
+                       type="text">
+            </div>
+            <div class="form-group" id="expiration-date">
+                <label>Expiration Date</label>
+                <select id="dateMonth">
+                    <option value="01">January</option>
+                    <option value="02">February</option>
+                    <option value="03">March</option>
+                    <option value="04">April</option>
+                    <option value="05">May</option>
+                    <option value="06">June</option>
+                    <option value="07">July</option>
+                    <option value="08">August</option>
+                    <option value="09">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+                <select id="dateYear">
+                    <option value="22"> 2022</option>
+                    <option value="23"> 2023</option>
+                    <option value="24"> 2024</option>
+                    <option value="25"> 2025</option>
+                    <option value="26"> 2026</option>
+                    <option value="27"> 2027</option>
+                </select>
+            </div>
+
+        </form>
         <button class="row btn btn-danger float-left" onclick="toDelivery()" type="button">Back</button>
         <button class="row btn btn-success float-right" id="finishPurchaseCashButton" onclick="finishPurchase()"
                 type="submit">Finish Purchase
         </button>
+
     </div>
 
 
 </div>
-<div id="finalDiv" style="display: none">
-    <a class="align-middle ml-4" th:href="@{/}">Get back to homepage!</a>
-</div>
+<div id="finalDiv" class="text-center" style="display: none">
+    <a th:href="@{/}">Get back to homepage!</a>
 </div>
 <div class="fixed-bottom" style="display: none">
     <input id="hiddenAddressIdForDto">
@@ -195,9 +239,9 @@
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-<script src="../js/addToCartFunction.js"></script>
-<script src="../js/orderFunction.js"></script>
-<script src="../js/chooseAddressFunction.js"></script>
+<script src="../css&js/js/addToCartFunction.js"></script>
+<script src="../css&js/js/orderFunction.js"></script>
+<script src="../css&js/js/chooseAddressFunction.js"></script>
 
 </body>
 </html>

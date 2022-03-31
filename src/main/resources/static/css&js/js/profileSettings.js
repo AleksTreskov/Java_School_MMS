@@ -1,5 +1,3 @@
-
-
 /*
 Addresses functions
  */
@@ -48,14 +46,15 @@ function deleteAddress(id) {
         url: 'profile/deleteAddressById',
         data: JSON.stringify(deleteId)
     }).done(function (result) {
-            if (!result.error) {
-                deleteAddressRow.parentNode.removeChild(deleteAddressRow);
-            } else {
+        if (!result.error) {
+            deleteAddressRow.parentNode.removeChild(deleteAddressRow);
+            window.location.reload()
+        } else {
 
-                toastr.error(result.message)
-            }
+            toastr.error(result.message)
+        }
 
-        });
+    });
 }
 
 function addAddress() {
@@ -101,30 +100,31 @@ function saveNewAddress() {
         url: 'profile/saveNewAddress/',
         data: JSON.stringify(newAddress)
     }).done(function (result) {
-        if (result.error){
+        if (result.error) {
             toastr.error(result.message);
             return;
         }
-        var NewRow = table.insertRow();
-        NewRow.id = "row" + result.id;
-        var Newcell1 = NewRow.insertCell(0);
-        var Newcell2 = NewRow.insertCell(1);
-        var Newcell3 = NewRow.insertCell(2);
-        var Newcell4 = NewRow.insertCell(3);
-        var Newcell5 = NewRow.insertCell(4);
-        var Newcell6 = NewRow.insertCell(5);
-        var Newcell7 = NewRow.insertCell(6);
-        var Newcell8 = NewRow.insertCell(7);
-        Newcell1.innerHTML = result.country;
-        Newcell2.innerHTML = result.city;
-        Newcell3.innerHTML = result.street;
-        Newcell4.innerHTML = result.building;
-        Newcell5.innerHTML = result.flat;
-        Newcell6.innerHTML = result.postcode;
-        Newcell7.innerHTML = "<button type=\"button\" class=\"row btn btn-primary\" onclick=\"editAddress('" + result.id + "');\">Edit</button>";
-        Newcell8.innerHTML = "<button type=\"button\" class=\"row btn btn-danger\" onclick=\"deleteAddress('" + result.id + "');\">Delete</button>";
+        // var NewRow = table.insertRow();
+        // NewRow.id = "row" + result.id;
+        // var Newcell1 = NewRow.insertCell(0);
+        // var Newcell2 = NewRow.insertCell(1);
+        // var Newcell3 = NewRow.insertCell(2);
+        // var Newcell4 = NewRow.insertCell(3);
+        // var Newcell5 = NewRow.insertCell(4);
+        // var Newcell6 = NewRow.insertCell(5);
+        // var Newcell7 = NewRow.insertCell(6);
+        // var Newcell8 = NewRow.insertCell(7);
+        // Newcell1.innerHTML = result.country;
+        // Newcell2.innerHTML = result.city;
+        // Newcell3.innerHTML = result.street;
+        // Newcell4.innerHTML = result.building;
+        // Newcell5.innerHTML = result.flat;
+        // Newcell6.innerHTML = result.postcode;
+        // Newcell7.innerHTML = "<button type=\"button\" class=\"row btn btn-primary\" onclick=\"editAddress('" + result.id + "');\">Edit</button>";
+        // Newcell8.innerHTML = "<button type=\"button\" class=\"row btn btn-danger\" onclick=\"deleteAddress('" + result.id + "');\">Delete</button>";
         document.getElementById("newAddressForm").style.display = 'block';
         document.getElementById("saveNewAddressButton").style.display = 'none';
+        window.location.reload();
     });
 }
 
@@ -153,7 +153,7 @@ function saveEditAddress(id) {
         url: 'profile/saveEditAddress/',
         data: JSON.stringify(edit)
     }).done(function (result) {
-        if (result.error){
+        if (result.error) {
             toastr.info(result.message);
             return;
         }
@@ -175,6 +175,9 @@ function saveEditAddress(id) {
     });
 }
 
+/*
+Profile main change
+ */
 function editMain() {
     switchMainSettingFields(false);
     switchMainSettingButtons('none', 'block');
@@ -195,10 +198,15 @@ function saveMainEdit() {
         dataType: 'json',
         url: 'profile/updateMainInfo/',
         data: JSON.stringify(edit)
+    }).done(function (result) {
+        if (!result.error) {
+            toastr.success("Edited")
+            switchMainSettingFields(true);
+            switchMainSettingButtons('block', 'none');
+        } else {
+            toastr.error(result.message);
+        }
     });
-
-    switchMainSettingFields(true);
-    switchMainSettingButtons('block', 'none');
 
 
 }

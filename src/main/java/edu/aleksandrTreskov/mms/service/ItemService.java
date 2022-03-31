@@ -1,7 +1,7 @@
 package edu.aleksandrTreskov.mms.service;
 
+import edu.aleksandrTreskov.mms.dto.ItemDTO;
 import edu.aleksandrTreskov.mms.entity.Item;
-import edu.aleksandrTreskov.mms.mapstruct.dto.ItemDTO;
 import edu.aleksandrTreskov.mms.mapstruct.mapper.ItemMapper;
 import edu.aleksandrTreskov.mms.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +18,11 @@ import java.util.List;
 @Service
 public class ItemService {
     private final ItemRepository itemRepository;
-
+    private final MessageService messageService;
 
     public Item saveItem(Item item) {
         itemRepository.save(item);
+        messageService.sendMessage();
         return item;
     }
 
@@ -33,13 +34,6 @@ public class ItemService {
         });
         return items;
 
-    }
-
-    public List<ItemDTO> findTop10() {
-        List<ItemDTO> items = new ArrayList<>();
-        itemRepository.findTop10ByOrderByCategoryAscQuantityDesc().forEach(item ->
-                items.add(ItemMapper.INSTANCE.toDTO(item)));
-        return items;
     }
 
     public ItemDTO findById(long id) {
@@ -81,4 +75,10 @@ public class ItemService {
         return itemRepository.findAllByCategory(category, pageable);
 
     }
+
+    public List<Item> searchByText(String searchText) {
+        return itemRepository.searchByText(searchText);
+    }
+
+
 }

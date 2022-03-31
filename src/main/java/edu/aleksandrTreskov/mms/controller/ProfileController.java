@@ -1,8 +1,8 @@
 package edu.aleksandrTreskov.mms.controller;
 
+import edu.aleksandrTreskov.mms.dto.*;
 import edu.aleksandrTreskov.mms.entity.Address;
 import edu.aleksandrTreskov.mms.entity.Client;
-import edu.aleksandrTreskov.mms.mapstruct.dto.*;
 import edu.aleksandrTreskov.mms.mapstruct.mapper.AddressMapper;
 import edu.aleksandrTreskov.mms.service.AddressService;
 import edu.aleksandrTreskov.mms.service.CartService;
@@ -33,12 +33,12 @@ public class ProfileController {
         return "profile";
     }
 
-
+    @ResponseBody
     @PostMapping("/updateMainInfo")
-    public String updateMainInfo(@RequestBody ClientDTO clientDTO, Principal principal) {
+    public ResponseAttribute updateMainInfo(@RequestBody ClientDTO clientDTO, Principal principal) {
         Client client = profileService.findByEmail(principal.getName());
         profileService.updateClient(clientDTO, client);
-        return "redirect:/profile";
+        return ResponseAttribute.builder().error(false).build();
     }
 
     @PostMapping("/changePassword")

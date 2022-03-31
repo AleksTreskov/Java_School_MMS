@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"/>
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap"/>
-    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css&js/css/main.css">
 
     <link rel="stylesheet" href="../libs/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
@@ -24,11 +24,11 @@
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+        <form th:action="@{/catalog/search}">
         <label for="site-search"></label>
-        <input type="search" id="site-search" name="q">
-        <!--        <a th:href="@{/items/filter/}{}">-->
+        <input type="search" id="site-search" name="searchText">
         <button id="searchButton">Search</button>
-        <!--        </a>-->
+        </form>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto"></ul>
             <ul class="navbar-nav">
@@ -68,25 +68,25 @@
 </nav>
 <header class="header">
     <div class="container text-center">
-        <img src="../img/logo/logo.png" width="500" height="150" alt="">
+<!--        <img src="../img/logo/logo.png" width="500" height="150" alt="">-->
         <div class="display-4">E-shop</div>
         <p class="lead">Browse our products</p>
     </div>
 </header>
-<div>
+<div class="row col-sm-20" style="justify-content: center">
     <a th:href="@{'/page/'+${currentPage}+'?sortField=name&sortDir='+${reverseSortDir}}">
-        <button>Sort By Name</button>
-    </a>
+        <button class="btn-warning">Sort By Name</button>
+    </a>&nbsp;
     <a th:href="@{'/page/'+${currentPage}+'?sortField=price&sortDir='+${reverseSortDir}}">
-        <button>Sort By Price</button>
-    </a>
+        <button class="btn-warning">Sort By Price</button>
+    </a>&nbsp;
     <a sec:authorize="hasRole('ROLE_ADMIN')"
        th:href="@{'/page/'+${currentPage}+'?sortField=quantity&sortDir='+${reverseSortDir}}">
-        <button>Sort By Quantity</button>
-    </a>
+        <button class="btn-warning">Sort By Quantity</button>
+    </a>&nbsp;
     <a sec:authorize="hasRole('ROLE_ADMIN')"
        th:href="@{'/page/'+${currentPage}+'?sortField=sold&sortDir='+${reverseSortDir}}">
-        <button>Sort By Sold</button>
+        <button class="btn-warning">Sort By Sold</button>
     </a>
 
 </div>
@@ -117,7 +117,7 @@
                 <div class="row no-gutters">
                     <div class="col-sm-5 d-flex justify-content-center">
                         <img class="" height="150px" width="125px"
-                             th:src="@{${'../img/item/item' + item.getId()+'.jpg'}}" th:alt="${item.name}">
+                             th:src="@{${'../img/item/' + item.getImgName()}}" th:alt="${item.name}">
                     </div>
                     <div class="col-sm-7 d-flex justify-content-center">
                         <div class="card-body">
@@ -131,14 +131,14 @@
                                 <ul class="pagination mt-2">
                                     <li class="page-item">
                                         <button class="page-link"
-                                                th:onclick="'javascript:addLess(\'' + ${item.id} + '\');'">
+                                                th:onclick="'javascript:addLess(\'' + ${item.getId()} + '\');'">
                                             <span aria-hidden="true">&laquo;</span>
                                         </button>
                                     </li>
-                                    <li class="page-item"><a class="page-link" th:id="${'quantity'+item.id}">1</a></li>
+                                    <li class="page-item"><a class="page-link" th:id="${'quantity'+item.getId()}">1</a></li>
                                     <li class="page-item">
                                         <button class="page-link"
-                                                th:onclick="'javascript:addMore(\'' + ${item.id} + '\');'">
+                                                th:onclick="'javascript:addMore(\'' + ${item.getId()} + '\');'">
                                             <span aria-hidden="true">&raquo;</span>
                                         </button>
                                     </li>
@@ -162,9 +162,7 @@
 </div>
 <div th:if="${totalPages>1}">
     <div class="row col-sm-20 justify-content-center">
-        <!--        <div class="col-sm-4">-->
-        <!--            Total Rows: [[${totalItems}]]-->
-        <!--        </div>-->
+
         <div class="col-sm-1">
                    <span th:each="i: ${#numbers.sequence(1,totalPages)}">
                        <a th:if="${currentPage != i}"
@@ -184,10 +182,18 @@
         </div>
     </div>
 </div>
+<footer class="bg-light text-center text-lg-start">
+
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+        © 2022 Copyright:
+        <a class="text-dark" href="http://localhost:8080/">Eshop.com</a>
+    </div>
+
+</footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-<script src="../js/addToCartFunction.js"></script>
+<script src="../css&js/js/addToCartFunction.js"></script>
 </body>
 
 </html>

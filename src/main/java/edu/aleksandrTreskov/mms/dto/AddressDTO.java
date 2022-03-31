@@ -1,4 +1,4 @@
-package edu.aleksandrTreskov.mms.mapstruct.dto;
+package edu.aleksandrTreskov.mms.dto;
 
 import lombok.*;
 

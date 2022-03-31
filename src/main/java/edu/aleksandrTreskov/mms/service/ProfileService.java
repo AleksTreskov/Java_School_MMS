@@ -3,15 +3,17 @@ package edu.aleksandrTreskov.mms.service;
 import edu.aleksandrTreskov.mms.entity.Client;
 import edu.aleksandrTreskov.mms.entity.Role;
 import edu.aleksandrTreskov.mms.exception.EmailAlreadyExistsException;
+import edu.aleksandrTreskov.mms.exception.FieldIsEmptyException;
 import edu.aleksandrTreskov.mms.exception.PasswordsNotMatchException;
-import edu.aleksandrTreskov.mms.mapstruct.dto.ChangePasswordDTO;
-import edu.aleksandrTreskov.mms.mapstruct.dto.ClientDTO;
+import edu.aleksandrTreskov.mms.dto.ChangePasswordDTO;
+import edu.aleksandrTreskov.mms.dto.ClientDTO;
 import edu.aleksandrTreskov.mms.mapstruct.mapper.ClientMapper;
 import edu.aleksandrTreskov.mms.repository.ClientRepository;
 import edu.aleksandrTreskov.mms.repository.PurchaseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.*;
 
@@ -59,6 +61,8 @@ public class ProfileService {
 
 
     public void updateClient(ClientDTO clientDTO, Client client) {
+        if (clientDTO.getName().isEmpty()||clientDTO.getSurname().isEmpty())
+            throw new FieldIsEmptyException("as");
         client.setSurname(clientDTO.getSurname());
         client.setName(clientDTO.getName());
         clientRepository.save(client);

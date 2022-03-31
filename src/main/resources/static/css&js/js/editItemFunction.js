@@ -11,7 +11,8 @@ function editItem(id) {
     const brandCategoryField = document.getElementById("brand");
     const modelPriceField = document.getElementById("model");
     const weightQuantityField = document.getElementById("weight");
-    // const itemSoldField = document.getElementById("sold");
+    const itemSoldField = document.getElementById("sold");
+    const itemImgField = document.getElementById("imgName");
     let edit = id;
 
     $.ajax({
@@ -31,7 +32,8 @@ function editItem(id) {
         brandCategoryField.value = result.brand;
         modelPriceField.value = result.model;
         weightQuantityField.value = result.weight;
-        // itemSoldField.value = result.sold;
+        itemSoldField.value = result.sold;
+        itemImgField.value = result.imgName;
 
 
     });
@@ -47,7 +49,8 @@ function saveEditItem(id) {
     let itemBrandField = document.getElementById("brand");
     let itemModelField = document.getElementById("model");
     let itemWeightField = document.getElementById("weight");
-    // let itemSoldField = document.getElementById("sold");
+    let itemSoldField = document.getElementById("sold");
+    let itemImgField = document.getElementById("imgName");
     let edit = {
         id: id,
         name: itemNameField.value,
@@ -58,7 +61,8 @@ function saveEditItem(id) {
         brand: itemBrandField.value,
         model: itemModelField.value,
         weight: itemWeightField.value,
-        // sold: itemSoldField.value,
+        sold: itemSoldField.value,
+        imgName: itemImgField.value
     };
     $.ajax({
         sync: true,
@@ -76,7 +80,7 @@ function saveEditItem(id) {
         itemBrandField = document.getElementById("brand" + id);
         itemModelField = document.getElementById("model" + id);
         itemWeightField = document.getElementById("weight" + id);
-        // itemSoldField = document.getElementById("sold" + id);
+        itemSoldField = document.getElementById("sold" + id);
         document.getElementById("editItemForm").style.display = 'none';
         document.getElementById("addToCart").style.display = 'block';
         itemNameField.innerHTML = result.name;
@@ -87,7 +91,7 @@ function saveEditItem(id) {
         itemBrandField.innerHTML = result.brand;
         itemModelField.innerHTML = result.model;
         itemWeightField.innerHTML = result.weight;
-        // itemSoldField.innerHTML = result.sold;
+        itemSoldField.innerHTML = result.sold;
 
         window.location.reload();
 

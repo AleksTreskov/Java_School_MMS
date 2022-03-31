@@ -17,6 +17,8 @@ public class Item {
     @NotEmpty(message = "Please provide the name")
     @Column(name = "name", nullable = false)
     private String name;
+    @Column(name = "imgName")
+    private String imgName;
     @NotEmpty(message = "Please provide the category ")
     @Column(name = "category", nullable = false)
     private String category;

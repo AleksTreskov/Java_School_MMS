@@ -23,6 +23,7 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Integer> {
 
     @Query(nativeQuery = true, value = "SELECT * from purchase order by id desc")
     List<Purchase> findAllPurchases();
-@Query(nativeQuery = true,value = "SELECT * from purchase WHERE MONTH(date_created) =(:month)")
+
+    @Query(nativeQuery = true, value = "SELECT * from purchase WHERE MONTH(date_created) =(:month)")
     List<Purchase> findPurchasesInMonth(@Param("month") int month);
 }

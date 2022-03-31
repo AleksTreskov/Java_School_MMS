@@ -27,3 +27,5 @@ logging:
     file: "%d{yyyy-MM-dd HH:mm:ss} - [%thread] %-5level %logger{36} - %msg%n"
   file:
     name: C:\java\Java_School_MMS\src\main\resources\app.log
+server:
+  port: 8088

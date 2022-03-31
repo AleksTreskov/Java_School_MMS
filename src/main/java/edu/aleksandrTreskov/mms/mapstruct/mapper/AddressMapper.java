@@ -1,7 +1,7 @@
 package edu.aleksandrTreskov.mms.mapstruct.mapper;
 
 import edu.aleksandrTreskov.mms.entity.Address;
-import edu.aleksandrTreskov.mms.mapstruct.dto.AddressDTO;
+import edu.aleksandrTreskov.mms.dto.AddressDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

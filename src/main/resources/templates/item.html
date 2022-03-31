@@ -11,7 +11,7 @@
           href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap"/>
 
     <link rel="stylesheet" href="../libs/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css&js/css/main.css">
     <link href="https://fonts.googleapis.com/css?family=Merriweather:300,400,400i,700&amp;subset=cyrillic-ext"
           rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css
@@ -68,7 +68,7 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-sm-5 d-flex justify-content-center">
-            <img class="product-img" th:src="${'../img/item/item' + item.id + '.jpg'}" alt="">
+            <img class="product-img" th:src="${'../img/item/' + item.getImgName()}" alt="">
         </div>
         <div class="col-sm-7 mt-5">
 
@@ -85,6 +85,7 @@
             <p th:text="${'Brand : ' + item.brand}" th:id="${'brand'+item.id}">Brand</p>
             <p th:text="${'Model : ' + item.model}" th:id="${'model'+item.id}">Model</p>
             <p th:text="${'Weight : ' + item.weight + 'kg'}" th:id="${'weight'+item.id}">Weight</p>
+
 
 
             <div class="d-flex">
@@ -174,12 +175,18 @@
                 <input class="form-control"  step="any" id="weight" name="weight" placeholder="weight" required=""
                        type="number">
             </div>
+            <div class="col" style="display: none">
+                <label class="col-sm-2 col-form-label" for="imgName">ImgName</label>
+                <input class="form-control"  step="any" id="imgName" name="imgName" placeholder="imgName" required=""
+                       type="text">
+            </div>
+            <div class="col" style="display: none">
+                <label class="col-sm-2 col-form-label" for="sold">Sold</label>
+                <input class="form-control" id="sold" name="sold" placeholder="Sold pcs" required=""
+                       type="number">
+            </div>
+
         </div>
-        <!--        <div class="col">-->
-        <!--            <label class="col-sm-2 col-form-label" for="sold">Sold</label>-->
-        <!--            <input class="form-control" id="sold" name="sold" placeholder="Sold pcs" required=""-->
-        <!--                   type="number">-->
-        <!--        </div>-->
 
 
         <div class="form-group row">
@@ -195,8 +202,8 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-<script src="../js/editItemFunction.js"></script>
-<script src="../js/addToCartFunction.js"></script>
+<script src="../css&js/js/editItemFunction.js"></script>
+<script src="../css&js/js/addToCartFunction.js"></script>
 
 </body>
 </html>

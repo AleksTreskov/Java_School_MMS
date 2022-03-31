@@ -1,23 +1,23 @@
-package edu.aleksandrTreskov.mms.mapstruct.dto;
+package edu.aleksandrTreskov.mms.dto;
 
 import lombok.*;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.Map;
+import java.io.Serializable;
 
 @Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ItemDTO {
+public class ItemDTO implements Serializable {
     private long id;
     @NotEmpty(message = "Please provide the name")
     private String name;
     @NotEmpty(message = "Please provide the category")
     private String category;
+    private String imgName;
     private String description;
     @NotEmpty(message = "Please provide the brand")
     private String brand;

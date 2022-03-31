@@ -13,30 +13,15 @@
     <link href="https://fonts.googleapis.com/css?family=Chango" rel="stylesheet">
 
     <!-- Custom stlylesheet -->
-    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css&js/css/main.css">
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
+
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
 </head>
 <body>
-<!--<div class="container bg-light">-->
-<!--    <div class="container bg-light">-->
-<!--        <div id="serviceOff" style="position: fixed; top: 30%; left: 40%;">-->
-<!--            <h1>OOPS, something went wrong...</h1>-->
-<!--            <img src="../img/logo/cat_problems.png">-->
-<!--            <h3><span th:text="${'Seems like '+ exception}"></span></h3>-->
-
-<!--            <button type="button" onclick="javascript:history.back()">Back</button>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
-
-
 <div id="notfound">
     <div class="notfound">
         <div>
@@ -44,9 +29,9 @@
             <h2>OOPS</h2>
             <h3>Something went wrong!</h3>
         </div>
-        <p th:text="${'Seems like '+ exception}">
-
+        <p th:if="${exceptionMsg!=null}" th:text="${'Seems like '+ exceptionMsg}">
         </p>
+        <p th:if="${exceptionMsg==null}" th:text="${'Seems like '+ exceptionStackTrace}"></p>
         <button type="button" onclick="javascript:history.back()">Back</button>
     </div>
 </div>

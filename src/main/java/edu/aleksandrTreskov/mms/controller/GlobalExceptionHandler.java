@@ -1,9 +1,6 @@
 package edu.aleksandrTreskov.mms.controller;
 
-import edu.aleksandrTreskov.mms.exception.EmailAlreadyExistsException;
-import edu.aleksandrTreskov.mms.exception.EntityNotFoundException;
-import edu.aleksandrTreskov.mms.exception.OutOfStockException;
-import edu.aleksandrTreskov.mms.exception.PasswordsNotMatchException;
+import edu.aleksandrTreskov.mms.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -15,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -44,13 +42,13 @@ public class GlobalExceptionHandler {
         LOGGER.error(ex.getMessage());
         LOGGER.error(Arrays.toString(ex.getStackTrace()));
         ModelAndView mav = new ModelAndView();
-        mav.addObject("exception", ex.getMessage());
+        mav.addObject("exceptionMsg", ex.getMessage());
         mav.setViewName(DEFAULT_ERROR_VIEW);
         return mav;
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ErrorInfo handleValidFieldsException(MethodArgumentNotValidException ex) {
+    @ExceptionHandler({MethodArgumentNotValidException.class, FieldIsEmptyException.class})
+    public ErrorInfo handleValidFieldsException(Exception ex) {
         LOGGER.error(ex.getMessage());
         LOGGER.error(Arrays.toString(ex.getStackTrace()));
         return new ErrorInfo("Check your fields: at least one of them is empty or not valid.");
@@ -62,7 +60,8 @@ public class GlobalExceptionHandler {
         LOGGER.error(ex.getMessage());
         LOGGER.error(Arrays.toString(ex.getStackTrace()));
         ModelAndView mav = new ModelAndView();
-        mav.addObject("exception", ex.getMessage());
+        mav.addObject("exStackTrace", ex.getStackTrace());
+        mav.addObject("exceptionMsg", ex.getMessage());
         mav.setViewName(DEFAULT_ERROR_VIEW);
         return mav;
     }

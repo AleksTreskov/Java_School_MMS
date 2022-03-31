@@ -28,4 +28,7 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
     @Query("SELECT i FROM Item i WHERE i.isDeleted = false and i.category = (:category)")
     Page<Item> findAllByCategory(@Param("category") String category, Pageable pageable);
 
+    @Query(nativeQuery = true, value = "SELECT * from item where name like Concat('%',(:searchText),'%') " +
+            "or category like Concat('%',(:searchText),'%')or brand like Concat('%',(:searchText),'%') or model like Concat('%',(:searchText),'%')")
+    List<Item> searchByText(@Param("searchText") String searchText);
 }

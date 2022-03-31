@@ -28,7 +28,22 @@ function showDivs(cartDiv, deliveryDiv, chosenAddressDiv, paymentDiv, finalDiv) 
     chosen.style.display = chosenAddressDiv;
     final.style.display = finalDiv;
 }
+function onChangePayment() {
+    let payment = document.getElementById("paymentMethod");
+    let creditCardForm = document.getElementById("creditCardForm");
+    let finishOrderCreditButton = document.getElementById("finishOrderCreditButton");
+    let finishOrderCashButton = document.getElementById("finishOrderCashButton");
 
+    if (payment.value === "CARD") {
+        creditCardForm.style.display = 'block';
+        finishOrderCashButton.style.display = 'none';
+        finishOrderCreditButton.style.display = 'block';
+    } else {
+        creditCardForm.style.display = 'none';
+        finishOrderCashButton.style.display = 'block';
+        finishOrderCreditButton.style.display = 'none';
+    }
+}
 function chooseAddress(addressId) {
     showDivs('block', 'none', 'block', 'none', 'none');
     document.getElementById("hiddenAddressIdForDto").value = addressId;
@@ -50,6 +65,7 @@ function toPayment() {
     showDivs('block', 'none', 'none', 'block', 'none');
 }
 
+
 function finishPurchase() {
     document.getElementById("hiddenPaymentMethod").value = document.getElementById("paymentMethod").value;
     document.getElementById("hiddenDeliveryMethod").value = document.getElementById("deliveryMethod").value;
@@ -67,7 +83,12 @@ function finishPurchase() {
         dataType: 'json',
         url: '/checkout/confirm',
         data: JSON.stringify(orderInfo)
+    }).done(function (result){
+        if (!result.error){
+            toastr.success('Your Purchase has been registered')
+        showDivs('block', 'none', 'none', 'none', 'block');}
+        else toastr.error(result.message);
     });
-    showDivs('block', 'none', 'none', 'none', 'block');
-toastr.success('Your Purchase has been registered')
+
+
 }

@@ -2,10 +2,11 @@ package edu.aleksandrTreskov.mms.service;
 
 import edu.aleksandrTreskov.mms.common.PaymentStatus;
 import edu.aleksandrTreskov.mms.common.PurchaseStatus;
+import edu.aleksandrTreskov.mms.dto.*;
 import edu.aleksandrTreskov.mms.entity.Address;
 import edu.aleksandrTreskov.mms.entity.Item;
 import edu.aleksandrTreskov.mms.entity.Purchase;
-import edu.aleksandrTreskov.mms.mapstruct.dto.*;
+import edu.aleksandrTreskov.mms.exception.OutOfStockException;
 import edu.aleksandrTreskov.mms.mapstruct.mapper.ItemMapper;
 import edu.aleksandrTreskov.mms.repository.AddressRepository;
 import edu.aleksandrTreskov.mms.repository.ItemRepository;
@@ -24,6 +25,7 @@ public class PurchaseService {
     private final PurchaseRepository purchaseRepository;
     private final AddressRepository addressRepository;
     private final ItemRepository itemRepository;
+    private final MessageService messageService;
 
     public List<PurchaseDTO> getAllPurchasesForClient(String email) {
         List<Purchase> purchases = purchaseRepository.getAllPurchasesByClientEmail(email);
@@ -47,14 +49,17 @@ public class PurchaseService {
     public void savePurchase(Cart cart, PurchaseInfo purchaseInfo, Purchase purchase) {
         Optional<Address> address = addressRepository.findById(purchaseInfo.getAddressId());
         address.ifPresent(purchase::setAddress);
-
         List<Item> items = new ArrayList<>();
         for (CartItem cartItem : cart.getCartItems()) {
             for (int i = 0; i < cartItem.getQuantity(); i++) {
+
                 items.add(ItemMapper.INSTANCE.toItem(cartItem.getItemDTO()));
             }
-            cartItem.getItemDTO().setQuantity(cartItem.getItemDTO().getQuantity() - cartItem.getQuantity());
-            cartItem.getItemDTO().setSold(cartItem.getItemDTO().getSold() + cartItem.getQuantity());
+            if (itemRepository.findById(cartItem.getItemDTO().getId()).getQuantity() < cartItem.getQuantity())
+                throw new OutOfStockException(String.format("Sorry, not enough quantity of %s for your purchase.", cartItem.getItemDTO().getName()));
+
+            cartItem.getItemDTO().setQuantity(itemRepository.findById(cartItem.getItemDTO().getId()).getQuantity() - cartItem.getQuantity());
+            cartItem.getItemDTO().setSold(itemRepository.findById(cartItem.getItemDTO().getId()).getSold() + cartItem.getQuantity());
             itemRepository.save(ItemMapper.INSTANCE.toItem(cartItem.getItemDTO()));
         }
         purchase.setItems(items);
@@ -73,6 +78,9 @@ public class PurchaseService {
         purchase.setDateCreated(LocalDateTime.now());
 
         purchaseRepository.save(purchase);
+        messageService.sendMessage();
+
+
     }
 
     public List<Purchase> getAllPurchases() {
@@ -83,7 +91,7 @@ public class PurchaseService {
         return purchaseRepository.findById(orderId);
     }
 
-    public int itemExistInCartCheck(List<CartItem> cartItems, long id) {
+    private int itemExistInCartCheck(List<CartItem> cartItems, long id) {
         for (int i = 0; i < cartItems.size(); i++) {
             if (cartItems.get(i).getItemDTO().getId() == id)
                 return i;
