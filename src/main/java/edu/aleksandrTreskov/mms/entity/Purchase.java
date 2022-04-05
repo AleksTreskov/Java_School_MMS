@@ -23,7 +23,6 @@ import java.util.List;
 @Table(name = "PURCHASE")
 @Entity
 @Data
-@ToString
 public class Purchase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

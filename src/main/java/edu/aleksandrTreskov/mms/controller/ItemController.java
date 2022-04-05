@@ -33,7 +33,6 @@ public class ItemController {
     }
 
 
-
     @PostMapping("/newItem/add")
     public String saveItem(@ModelAttribute Item item, @RequestParam("productImage") MultipartFile file) {
         String img = file.getOriginalFilename();
@@ -63,9 +62,9 @@ public class ItemController {
     }
 
     @GetMapping({"/", "/catalog"})
-    public String homePage(Model model, HttpSession session) {
+    public String homePage(@RequestParam(value = "category", required = false) String category,Model model, HttpSession session) {
 
-        return findPaginated(1, "id", "asc", model, session);
+        return findPaginated(1, category,"id", "asc", model, session);
     }
 
 //    @GetMapping("/top")
@@ -111,12 +110,18 @@ public class ItemController {
 
     @GetMapping("/page/{pageNo}")
     public String findPaginated(@PathVariable("pageNo") int pageNo,
+                                @RequestParam(value = "category", required = false) String category,
                                 @RequestParam("sortField") String sortField,
                                 @RequestParam("sortDir") String sortDir, Model model, HttpSession session) {
 
         int pageSize = 7;
+        Page<Item> page;
         loadNavAttributesForItemsModel(model, session);
-        Page<Item> page = itemService.findPaginated(pageNo, pageSize, sortField, sortDir);
+        if (category != null) {
+            page = itemService.findPaginatedCategory(pageNo, pageSize, sortField, sortDir, category);
+            model.addAttribute("chosenCategory", category);
+        } else
+            page = itemService.findPaginated(pageNo, pageSize, sortField, sortDir);
         return getPageContent(pageNo, sortField, sortDir, model, page);
     }
 
@@ -130,6 +135,7 @@ public class ItemController {
         model.addAttribute("categories", itemService.findCategories());
 
     }
+
     private String getPageContent(int pageNo, String sortField, String sortDir, Model model, Page<Item> page) {
         List<Item> items = page.getContent();
         model.addAttribute("currentPage", pageNo);

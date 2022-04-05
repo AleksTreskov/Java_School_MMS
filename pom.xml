@@ -125,6 +125,13 @@
       <artifactId>activemq-broker</artifactId>
       <version>5.13.3</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-mail</artifactId>
+      <version>2.6.3</version>
+    </dependency>
+
     <!--    <dependency>-->
 <!--      <groupId>org.apache.activemq</groupId>-->
 <!--      <artifactId>activemq-core</artifactId>-->

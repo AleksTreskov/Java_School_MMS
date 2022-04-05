@@ -31,4 +31,7 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
     @Query(nativeQuery = true, value = "SELECT * from item where name like Concat('%',(:searchText),'%') " +
             "or category like Concat('%',(:searchText),'%')or brand like Concat('%',(:searchText),'%') or model like Concat('%',(:searchText),'%')")
     List<Item> searchByText(@Param("searchText") String searchText);
+
+
 }
+

@@ -26,6 +26,8 @@ public class PurchaseService {
     private final AddressRepository addressRepository;
     private final ItemRepository itemRepository;
     private final MessageService messageService;
+    private final EmailService emailService;
+
 
     public List<PurchaseDTO> getAllPurchasesForClient(String email) {
         List<Purchase> purchases = purchaseRepository.getAllPurchasesByClientEmail(email);
@@ -79,6 +81,9 @@ public class PurchaseService {
 
         purchaseRepository.save(purchase);
         messageService.sendMessage();
+        emailService.sendSimpleEmail(purchase.getClient().getEmail(),
+                String.format("Your purchase with id № %d has been registered", purchase.getId()),
+                String.format("Thanks for choosing E-shop! Here is your order № %d", purchase.getId()) + purchase.getItems().toString());
 
 
     }

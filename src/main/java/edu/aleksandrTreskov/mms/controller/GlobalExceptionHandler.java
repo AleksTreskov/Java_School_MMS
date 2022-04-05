@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import javax.validation.ConstraintViolationException;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -22,11 +21,16 @@ public class GlobalExceptionHandler {
     public static final String DEFAULT_ERROR_VIEW = "error";
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-
+    @ExceptionHandler(WrongActivationCodeException.class)
+    public ErrorInfo handleWrongActivationCodeException(WrongActivationCodeException ex){
+        LOGGER.warn(ex.getMessage());
+        LOGGER.warn(ex.getMessage());
+        return new ErrorInfo(ex.getMessage());
+    }
     @ExceptionHandler(PasswordsNotMatchException.class)
     public ErrorInfo handleMismatchPassword(PasswordsNotMatchException ex) {
-        LOGGER.error(ex.getMessage());
-        LOGGER.error(Arrays.toString(ex.getStackTrace()));
+        LOGGER.warn(ex.getMessage());
+        LOGGER.warn(Arrays.toString(ex.getStackTrace()));
         return new ErrorInfo(ex.getMessage());
     }
 

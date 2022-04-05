@@ -39,7 +39,7 @@ public class CartService {
         }
     }
 
-    public int itemExistInCartCheck(List<CartItem> cartItems, long id) {
+    private int itemExistInCartCheck(List<CartItem> cartItems, long id) {
         for (int i = 0; i < cartItems.size(); i++) {
             if (cartItems.get(i).getItemDTO().getId() == id)
                 return i;

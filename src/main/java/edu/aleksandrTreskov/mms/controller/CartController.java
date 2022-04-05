@@ -5,11 +5,19 @@ import edu.aleksandrTreskov.mms.dto.Cart;
 import edu.aleksandrTreskov.mms.dto.ResponseAttribute;
 import edu.aleksandrTreskov.mms.service.CartService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
+import java.io.FileNotFoundException;
 
 
 @Controller
@@ -48,4 +56,6 @@ public class CartController {
         cartService.addItemToCart(addItemToCart, cart);
         return ResponseAttribute.builder().error(false).build();
     }
-}
+
+    }
+
