@@ -6,20 +6,23 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css&js/css/main.css">
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css
 ">
-    <link rel="stylesheet" href="../css&js/css/main.css">
-    <title>Document</title>
+    <title>Checkout</title>
 </head>
 <body>
 
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-
+        <a class="navbar-brand" href="#">
+            <img th:src="@{/img/logo/logo.png}" srwidth="auto" height="40" class="d-inline-block align-top" alt=""/>
+        </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -35,6 +38,12 @@
                 <li class="nav-item active">
                     <a class="nav-link" th:href="@{/catalog}" href="#">shop</a>
                 </li>
+                <li class="nav-item active" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="nav-link" th:href="@{/newItem}" href="#">add new item</a>
+                </li>
+                <li class="nav-item active" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="nav-link" th:href="@{/stats}" href="#">view sales stats</a>
+                </li>
                 <li class="nav-item active">
                     <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/auth/login}">login</a>
                 </li>
@@ -44,8 +53,12 @@
                        type="submit">logout</a>
                 </li>
                 <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/promo}" href="#">promo</a>
+                </li>
+                <li class="nav-item active">
                     <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/purchases}" href="#">purchases</a>
                 </li>
+
                 <li class="nav-item active">
                     <a class="fa fa-shopping-cart nav-link " th:href="@{/cart}" href="#"></a>
                 </li>
@@ -84,6 +97,11 @@
                 </td>
                 <td th:text="${cartItem.getQuantity()}"></td>
                 <td th:text="${cartItem.getItemDTO().getPrice() + '$'}"></td>
+            </tr>
+            <tr th:if="${discountCode.length()>2} ">
+                <th scope="row" th:text="${'Discount code ' + discountCode + ' used'}"></th>
+                <td></td>
+                <th scope="row" class="red" th:text="${total - totalWithoutDiscount}"></th>
             </tr>
             <tr>
                 <th scope="row">TOTAL</th>
@@ -236,6 +254,8 @@
     <input id="hiddenAddressIdForDto">
     <input id="hiddenPaymentMethod">
     <input id="hiddenDeliveryMethod">
+    <input id="hiddenDiscountCode" th:value="${discountCode}">
+
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>

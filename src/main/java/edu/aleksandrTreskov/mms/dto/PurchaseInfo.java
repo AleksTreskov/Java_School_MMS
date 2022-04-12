@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PurchaseInfo {
     private Long addressId;
+    private String discountCode;
     private PaymentMethod paymentMethod;
     private ShipmentMethod deliveryMethod;
+
 }

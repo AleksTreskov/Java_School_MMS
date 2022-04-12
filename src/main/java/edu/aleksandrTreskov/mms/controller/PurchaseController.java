@@ -1,14 +1,11 @@
 package edu.aleksandrTreskov.mms.controller;
 
-import edu.aleksandrTreskov.mms.entity.Purchase;
 import edu.aleksandrTreskov.mms.dto.Cart;
 import edu.aleksandrTreskov.mms.dto.PurchaseInfo;
 import edu.aleksandrTreskov.mms.dto.PurchaseStatusInfo;
 import edu.aleksandrTreskov.mms.dto.ResponseAttribute;
-import edu.aleksandrTreskov.mms.service.AddressService;
-import edu.aleksandrTreskov.mms.service.CartService;
-import edu.aleksandrTreskov.mms.service.ProfileService;
-import edu.aleksandrTreskov.mms.service.PurchaseService;
+import edu.aleksandrTreskov.mms.entity.Purchase;
+import edu.aleksandrTreskov.mms.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +22,7 @@ public class PurchaseController {
     private final ProfileService profileService;
     private final CartService cartService;
     private final AddressService addressService;
+    private final DiscountService discountService;
 
     @GetMapping("/purchases/all")
     public String findAllPurchases(Model model, HttpSession session) {
@@ -50,9 +48,18 @@ public class PurchaseController {
     }
 
     @GetMapping("/checkout")
-    public String addPurchase(Model model, HttpSession session, Principal principal) {
+    public String addPurchase(@RequestParam(value = "discountCode", required = false) String discountCode, Model model, HttpSession session, Principal principal) {
         Cart cart = (Cart) session.getAttribute("cart");
-        int totalPrice = cartService.countTotalPriceInCart(cart);
+        float totalPrice = cartService.countTotalPriceInCart(cart);
+        model.addAttribute("totalWithoutDiscount",totalPrice);
+        if (discountService.checkExistingCode(discountCode)) {
+            int percent = discountService.findByName(discountCode).getPercentDiscount();
+            totalPrice = totalPrice * (1 - (float) percent / 100);
+            model.addAttribute("discountCode", discountCode);
+        }
+        else
+        model.addAttribute("discountCode", " ");
+
         model.addAttribute("total", totalPrice);
         model.addAttribute("addresses", addressService.findAllAddressesByEmail(principal.getName()));
         model.addAttribute("cartCount", cartService.countItemsInCart(cart));

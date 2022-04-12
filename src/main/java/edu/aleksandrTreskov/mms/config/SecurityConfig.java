@@ -20,8 +20,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-
     private final UserDetailsService userDetailsService;
 
     @Autowired
@@ -29,14 +27,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.userDetailsService = userDetailsService;
     }
 
+
+
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/{category}/{pageNo}").permitAll()
-                .antMatchers("/**").permitAll()
                 .antMatchers("/cart/**", "/addToCart").permitAll()
+                .antMatchers("/promo").permitAll()
                 .antMatchers("/item/**").permitAll()
                 .antMatchers("/img/**").permitAll()
                 .antMatchers("/page/**").permitAll()

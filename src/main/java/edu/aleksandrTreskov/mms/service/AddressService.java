@@ -28,14 +28,18 @@ public class AddressService {
         });
         return addresses;
     }
-
+/**
+ *  Saving address to DB
+ **/
     public Address saveAddress(Address address, Client client) {
         address.setDeleted(false);
         address.setClient(client);
         addressRepository.save(address);
         return addressRepository.findByAddressInfo(client, address.getCountry(), address.getCity(), address.getStreet(), address.getBuilding(), address.getFlat(), address.getPostcode());
     }
-
+    /**
+     * Deleting address from DB using ID
+     **/
     public void deleteAddress(long id) {
         Address address;
         Optional<Address> optAddress = addressRepository.findById(id);

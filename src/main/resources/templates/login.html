@@ -5,22 +5,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Online shop</title>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css" />
+    <link rel="stylesheet" href="../css&js/css/main.css">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"/>
     <!-- Google Fonts Roboto -->
     <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
+          href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap"/>
 
     <link rel="stylesheet" href="../libs/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css&js/css/main.css">
     <link href="https://fonts.googleapis.com/css?family=Merriweather:300,400,400i,700&amp;subset=cyrillic-ext"
           rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
 </head>
 
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light" >
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand" href="#">
+            <img th:src="@{/img/logo/logo.png}" srwidth="auto" height="40" class="d-inline-block align-top" alt=""/>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -34,18 +40,21 @@
                     <a class="nav-link" th:href="@{/catalog}" href="#">shop</a>
                 </li>
 
-                <li  class="nav-item active" sec:authorize="hasRole('ROLE_ADMIN')">
+                <li class="nav-item active" sec:authorize="hasRole('ROLE_ADMIN')">
                     <a class="nav-link" th:href="@{/newItem}" href="#">add new item</a>
                 </li>
-                <li  class="nav-item active" sec:authorize="hasRole('ROLE_ADMIN')">
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/promo}" href="#">promo</a>
+                </li>
+                <li class="nav-item active" sec:authorize="hasRole('ROLE_ADMIN')">
                     <a class="nav-link" th:href="@{/stats}" href="#">view sales stats</a>
                 </li>
 
                 <li class="nav-item active">
-                    <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/auth/login}" >login</a>
+                    <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/auth/login}">login</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/auth/logout}" >logout</a>
+                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/auth/logout}">logout</a>
                 </li>
                 <li class="nav-item active">
                     <a class="fa fa-shopping-cart nav-link mt-1 " th:href="@{/cart}" href="#"></a>
@@ -59,34 +68,73 @@
     </div>
 </nav>
 
-    <div class="container">
-        <div class="col-sm-6">
+<div class="container">
+    <div class="col-sm-6">
+        <div id="LoginDiv">
             <h3 style="margin-top: 10px">Login Now</h3>
             <form method="post" th:action="@{/auth/login}">
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" name="username" id="email" placeholder="Your Email" class="form-control form-control-lg">
+                    <input type="email" name="username" id="email" placeholder="Your Email"
+                           class="form-control form-control-lg">
                 </div>
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" class="form-control form-control-lg" placeholder="Password" name="password" id="password">
+                    <input type="password" class="form-control form-control-lg" placeholder="Password" name="password"
+                           id="password">
                 </div>
                 <div th:if="${param.error}" class="alert alert-error text-danger">
                     Invalid username or password.
                 </div>
-                <input type="submit" value="Login" class="btn btn-primary btn-block">
+                <input type="submit" value="Login" id="loginButton" class="btn btn-primary btn-block ">
                 <br>
-                    <p>Don't have an Account?
-                        <a  th:href="@{/auth/signup}"> Sign up Now!</a>
-                    </p>
+                <p>Don't have an Account?
+                    <a th:href="@{/auth/signup}"> Sign up Now!</a>
+                </p>
+                <p>Forgot your Password?
+                    <a href="#" onclick="showDiv()">
+                        Recover</a>
+                </p>
 
             </form>
-
         </div>
+        <div style="display: none" id="recoverPasswordDiv">
+            <div id="phoneNumberDiv"class="form-group">
+                Enter your phone in format 79XXXXXXXXX or email
+                <input type="text"  id="phoneNumberInput" placeholder=""
+                       class="form-control form-control-lg">
+                <input type="button" onclick="sendCodeOnPhoneOrEmail()" value="Send recovery code"
+                       class="btn btn-primary btn-block">
 
+            </div>
+            <div id="recoveryCodeInput"class="form-group" style="display: none">
+                Enter code
+                <input type="number"  id="ActivationCode"
+                       class="form-control form-control-lg">
+                <input type="button" onclick="verifyCode()"  value="Verify"
+                       class="btn btn-primary btn-block">
+
+            </div>
+            <div id="newPasswordDiv"class="form-group" style="display: none">
+                Set new password
+                <input type="text" id="newPasswordInput" placeholder=""
+                       class="form-control form-control-lg">
+                <input type="button"  value="Confirm" onclick="setNewPassword()"
+                       class="btn btn-primary btn-block">
+
+            </div>
+        </div>
     </div>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 <script src="../css&js/js/addToCartFunction.js"></script>
+<script src="../css&js/js/loginFunction.js"></script>
+
+
+
 </body>
 
 </html>

@@ -1,6 +1,5 @@
 server:
   port: 8088
-
 spring:
   datasource:
     username: root
@@ -30,8 +29,10 @@ spring:
           auth: true
           starttls:
             enable: true
-    test-connection: true
-
+  social:
+    facebook:
+      appID:
+      appSecret:
 
 logging:
   level:
@@ -42,3 +43,7 @@ logging:
     file: "%d{yyyy-MM-dd HH:mm:ss} - [%thread] %-5level %logger{36} - %msg%n"
   file:
     name: C:\java\Java_School_MMS\src\main\resources\app.log
+twilio:
+  account_sid: ACfff4aa5e66ed399049e77ccce6784671
+  auth_token: f0ede3bf58e5b238b03e9cc73a9a90ed
+  trial_number: +15076985516

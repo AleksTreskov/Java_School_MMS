@@ -12,7 +12,6 @@ function showDivs(codeButtonDisp, signUpButtonDisp, verifyCodeButtonDisp, enterF
 function sendCodeOnEmail() {
     const email = document.getElementById("email").value;
 
-    showDivs("none", "none", "block", "block")
     $.ajax({
         sync: true,
         method: 'POST',
@@ -21,6 +20,12 @@ function sendCodeOnEmail() {
         url: '/auth/sendActivationCode',
         data: JSON.stringify(email)
 
+    }).done(function (result) {
+        if (result.error) {
+            toastr.info(result.message)
+        }
+        else{    showDivs("none", "none", "block", "block")
+        }
     });
 }
 

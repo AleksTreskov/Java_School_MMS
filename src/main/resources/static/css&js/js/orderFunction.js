@@ -15,6 +15,7 @@ toastr.options = {
     "showMethod": "fadeIn",
     "hideMethod": "fadeOut"
 }
+
 function showDivs(cartDiv, deliveryDiv, chosenAddressDiv, paymentDiv, finalDiv) {
     let cart = document.getElementById("cartDiv");
     let delivery = document.getElementById("deliveryDiv");
@@ -28,6 +29,7 @@ function showDivs(cartDiv, deliveryDiv, chosenAddressDiv, paymentDiv, finalDiv) 
     chosen.style.display = chosenAddressDiv;
     final.style.display = finalDiv;
 }
+
 function onChangePayment() {
     let payment = document.getElementById("paymentMethod");
     let creditCardForm = document.getElementById("creditCardForm");
@@ -44,6 +46,7 @@ function onChangePayment() {
         finishOrderCreditButton.style.display = 'none';
     }
 }
+
 function chooseAddress(addressId) {
     showDivs('block', 'none', 'block', 'none', 'none');
     document.getElementById("hiddenAddressIdForDto").value = addressId;
@@ -74,6 +77,7 @@ function finishPurchase() {
         addressId: document.getElementById("hiddenAddressIdForDto").value,
         paymentMethod: document.getElementById("hiddenPaymentMethod").value,
         deliveryMethod: document.getElementById("hiddenDeliveryMethod").value,
+        discountCode: document.getElementById("hiddenDiscountCode").value
     };
     $.ajax({
         sync: true,
@@ -83,11 +87,11 @@ function finishPurchase() {
         dataType: 'json',
         url: '/checkout/confirm',
         data: JSON.stringify(orderInfo)
-    }).done(function (result){
-        if (!result.error){
+    }).done(function (result) {
+        if (!result.error) {
             toastr.success('Your Purchase has been registered')
-        showDivs('block', 'none', 'none', 'none', 'block');}
-        else toastr.error(result.message);
+            showDivs('block', 'none', 'none', 'none', 'block');
+        } else toastr.error(result.message);
     });
 
 

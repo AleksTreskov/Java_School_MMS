@@ -20,10 +20,9 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final MessageService messageService;
 
-    public Item saveItem(Item item) {
+    public void saveItem(Item item) {
         itemRepository.save(item);
-        messageService.sendMessage();
-        return item;
+        messageService.sendEmailMessage();
     }
 
     public List<ItemDTO> findAllItems() {
@@ -50,6 +49,11 @@ public class ItemService {
 //        return itemDTOS;
 //    }
 
+    /**
+     * Finds top sold items for stats page
+     *
+     * @return
+     */
     public List<Item> findTop10SoldItems() {
         return itemRepository.findTop10OrderBySold();
     }
@@ -61,6 +65,15 @@ public class ItemService {
 
     }
 
+    /**
+     * Loads pages for all items
+     *
+     * @param pageNo
+     * @param pageSize
+     * @param sortField
+     * @param sortDirection
+     * @return
+     */
     public Page<Item> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection) {
         Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() :
                 Sort.by(sortField).descending();
@@ -68,6 +81,16 @@ public class ItemService {
         return itemRepository.findAll(pageable);
     }
 
+    /**
+     * Loads pages for items with defined category
+     *
+     * @param pageNo
+     * @param pageSize
+     * @param sortField
+     * @param sortDirection
+     * @param category
+     * @return
+     */
     public Page<Item> findPaginatedCategory(int pageNo, int pageSize, String sortField, String sortDirection, String category) {
         Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() :
                 Sort.by(sortField).descending();

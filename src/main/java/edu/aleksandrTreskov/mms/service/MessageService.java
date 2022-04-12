@@ -6,14 +6,19 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service for sending messages on second app
+ */
 @Service
 public class MessageService {
     @Autowired
     @Qualifier("jmsQueueTemplate")
     private JmsTemplate jmsTemplate;
 
-    public void sendMessage() {
+    public void sendEmailMessage() {
         MessageCreator messageCreator = session -> session.createTextMessage("update");
         jmsTemplate.send(messageCreator);
     }
+
+
 }

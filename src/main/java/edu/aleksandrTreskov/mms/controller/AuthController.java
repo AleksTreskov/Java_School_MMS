@@ -1,11 +1,12 @@
 package edu.aleksandrTreskov.mms.controller;
 
 import edu.aleksandrTreskov.mms.dto.Cart;
+import edu.aleksandrTreskov.mms.dto.RecoverPasswordDTO;
 import edu.aleksandrTreskov.mms.dto.ResponseAttribute;
-import edu.aleksandrTreskov.mms.service.EmailService;
 import edu.aleksandrTreskov.mms.entity.Client;
-import edu.aleksandrTreskov.mms.exception.WrongActivationCodeException;
+import edu.aleksandrTreskov.mms.exception.EmailAlreadyExistsException;
 import edu.aleksandrTreskov.mms.service.CartService;
+import edu.aleksandrTreskov.mms.service.EmailService;
 import edu.aleksandrTreskov.mms.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Controller
@@ -21,7 +23,6 @@ public class AuthController {
     private final ProfileService profileService;
     private final CartService cartService;
     private final EmailService emailService;
-    private int activationCode;
 
     @GetMapping("/login")
     public String getLoginPage(HttpSession session, Model model) {
@@ -55,25 +56,43 @@ public class AuthController {
 
     @PostMapping("/sendActivationCode")
     @ResponseBody
-    public ResponseAttribute sendActivationCode(@RequestBody String email) {
-        int a = 999;
-        int b = 9999;
-        activationCode = a + (int) (Math.random() * ((b - a) + 1));
-        System.out.println(activationCode);
-        System.out.println(email);
-        email = email.substring(1,email.length()-1);
-        System.out.println(email);
-        emailService.sendSimpleEmail(email, "Activation code for Eshop.com", String.format("Welcome to Eshop! To become the part of our community, please, enter the activation code %d", activationCode));
+    public ResponseAttribute sendActivationCodeOnEmail(@RequestBody String email) {
+
+        if (profileService.checkExistingEmail(email))
+            throw new EmailAlreadyExistsException("User with this email already exists.");
+        emailService.sendSimpleMessage(email, "Activation code for Eshop.com", String.format("Welcome to Eshop! To become the part of our community, please, enter the activation code %d", emailService.getCode()));
+
         return ResponseAttribute.builder().error(false).build();
     }
 
     @PostMapping("/verifyCode")
     @ResponseBody
     public ResponseAttribute verifyCode(@RequestBody int code) {
-        if (activationCode == code)
+        emailService.codeIsVerified(code);
+        return ResponseAttribute.builder().error(false).build();
+
+    }
+
+    @PostMapping("/forgotPassword")
+    @ResponseBody
+    public ResponseAttribute sendRecoveryCodeOnPhone(@RequestBody String loginParameter) {
+        if (profileService.checkExistingPhone(loginParameter)) {
+            emailService.sendSMS(loginParameter);
             return ResponseAttribute.builder().error(false).build();
-        else
-            throw new WrongActivationCodeException("Code is not correct");
+        }
+        if (profileService.checkExistingEmail(loginParameter)) {
+            emailService.sendSimpleMessage(loginParameter, "Password recovery", String.format("Your code for password recovery is %d", emailService.getCode()));
+            return ResponseAttribute.builder().error(false).build();
+
+        }
+        throw new NoSuchElementException("User with this parameter is not found");
+    }
+
+    @PostMapping("/setNewPassword")
+    @ResponseBody
+    public ResponseAttribute setNewPassword(@RequestBody RecoverPasswordDTO recoverPasswordDTO) {
+        profileService.setNewPassword(recoverPasswordDTO);
+        return ResponseAttribute.builder().error(false).build();
     }
 
 }

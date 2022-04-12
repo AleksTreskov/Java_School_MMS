@@ -10,7 +10,9 @@ import javax.jms.ConnectionFactory;
 import javax.jms.DeliveryMode;
 import javax.jms.Session;
 
-
+/**
+ * JMS config using activeMQ for messaging with second app
+ */
 @Configuration
 
 public class MessageConfig {
@@ -44,13 +46,5 @@ public class MessageConfig {
         return jmsTemplate;
     }
 
-//
-//    @Bean
-//    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory() {
-//        DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
-//        factory.setConnectionFactory(connectionFactory());
-//        factory.setConcurrency("1-1");
-//        return factory;
-//    }
 
 }
