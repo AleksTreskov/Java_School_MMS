@@ -49,7 +49,7 @@ public class DiscountService {
             throw new DiscountCodeException("Discount code is expired.");
         if (optionalDiscountCode.get().getRequiredSumForActivation() > cartService.countTotalPriceInCart(cart))
             throw new DiscountCodeException("Conditions for activating the discount code are not met");
-        if (purchaseService.getAllPurchasesForClient(email).isEmpty() && code.equals("WELCOME10"))
+        if (!purchaseService.getAllPurchasesForClient(email).isEmpty() && optionalDiscountCode.get().getName().equals("WELCOME10"))
             throw new DiscountCodeException("This discount is available only for new users");
         return optionalDiscountCode.get().getPercentDiscount();
     }

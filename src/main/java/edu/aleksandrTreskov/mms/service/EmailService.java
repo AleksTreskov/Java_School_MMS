@@ -30,7 +30,8 @@ public class EmailService {
 
 
     public void sendSimpleMessage(String toAddress, String subject, String message) {
-        toAddress = toAddress.substring(1, toAddress.length() - 1);
+        if (toAddress.startsWith("\""))
+            toAddress = toAddress.substring(1, toAddress.length() - 1);
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setFrom("Eshop@gmail.com");
         simpleMailMessage.setTo(toAddress);

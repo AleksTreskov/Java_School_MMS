@@ -14,11 +14,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MessageController {
     private final ItemService itemService;
+    private final ItemMapper itemMapper = ItemMapper.INSTANCE;
 
     @GetMapping("/api/message")
     public List<ItemDTO> getInformationForStand() {
         List<ItemDTO> itemDTOs = new ArrayList<>();
-        itemService.findTop10SoldItems().forEach(item -> itemDTOs.add(ItemMapper.INSTANCE.toDTO(item)));
+        itemService.findTop10SoldItems().forEach(item -> itemDTOs.add(itemMapper.toDTO(item)));
         return itemDTOs;
     }
 

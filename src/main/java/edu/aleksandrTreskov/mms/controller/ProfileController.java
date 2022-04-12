@@ -23,6 +23,7 @@ public class ProfileController {
     private final ProfileService profileService;
     private final CartService cartService;
     private final AddressService addressService;
+    private final AddressMapper addressMapper =AddressMapper.INSTANCE ;
 
     @GetMapping
     public String getClientProfile(HttpSession session, Model model, Principal principal) {
@@ -65,21 +66,21 @@ public class ProfileController {
     @ResponseBody
     @PostMapping("/saveEditAddress")
     public AddressDTO saveEditAddress(@Valid @RequestBody AddressDTO addressDTO, Principal principal) {
-        addressService.saveAddress(AddressMapper.INSTANCE.toAddress(addressDTO), profileService.findByEmail(principal.getName()));
-        return AddressMapper.INSTANCE.toDTO(addressService.findById(addressDTO.getId()));
+        addressService.saveAddress(addressMapper.toAddress(addressDTO), profileService.findByEmail(principal.getName()));
+        return addressMapper.toDTO(addressService.findById(addressDTO.getId()));
     }
 
     @ResponseBody
     @PostMapping("/saveNewAddress")
     public AddressDTO saveNewAddress(@Valid @RequestBody AddressDTO addressDTO, Principal principal) {
 
-        Address address = addressService.saveAddress(AddressMapper.INSTANCE.toAddress(addressDTO), profileService.findByEmail(principal.getName()));
-        return AddressMapper.INSTANCE.toDTO(address);
+        Address address = addressService.saveAddress(addressMapper.toAddress(addressDTO), profileService.findByEmail(principal.getName()));
+        return addressMapper.toDTO(address);
     }
 
     @ResponseBody
     @PostMapping("/editAddress")
     public AddressDTO editAddress(@RequestBody Long id) {
-        return AddressMapper.INSTANCE.toDTO(addressService.findById(id));
+        return addressMapper.toDTO(addressService.findById(id));
     }
 }

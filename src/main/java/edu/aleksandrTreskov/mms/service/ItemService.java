@@ -20,7 +20,16 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final MessageService messageService;
 
+
     public void saveItem(Item item) {
+        List<String> categories = itemRepository.findAllCategories();
+        for (String category : categories
+        ) {
+            if (category.equalsIgnoreCase(item.getCategory())) {
+                item.setCategory(category);
+                break;
+            }
+        }
         itemRepository.save(item);
         messageService.sendEmailMessage();
     }

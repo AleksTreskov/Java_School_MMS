@@ -41,9 +41,8 @@ public class Purchase {
     private PaymentStatus paymentStatus;
     @Column(name = "purchase_status")
     private PurchaseStatus purchaseStatus;
-    @ManyToOne
-    @JoinColumn(name = "discount_id")
-    private DiscountCode discountCode;
+    @JoinColumn(name = "discount_code")
+    private String discountCode;
     @Column(name = "is_deleted")
     private boolean isDeleted = false;
 

@@ -31,7 +31,7 @@ public class PurchaseService {
     private final MessageService messageService;
     private final EmailService emailService;
     private final DiscountRepository discountRepository;
-
+    private final ItemMapper mapper = ItemMapper.INSTANCE;
 
     public List<PurchaseDTO> getAllPurchasesForClient(String email) {
         List<Purchase> purchases = purchaseRepository.getAllPurchasesByClientEmail(email);
@@ -41,7 +41,7 @@ public class PurchaseService {
             List<CartItem> cartItems = new ArrayList<>();
             for (Item item : purchase.getItems()) {
                 if (itemExistInCartCheck(cartItems, item.getId()) == -1) {
-                    cartItems.add(new CartItem(ItemMapper.INSTANCE.toDTO(item), 1));
+                    cartItems.add(new CartItem(mapper.toDTO(item), 1));
                 } else {
                     cartItems.get(itemExistInCartCheck(cartItems, item.getId())).addQuantity(1);
                 }
@@ -55,9 +55,9 @@ public class PurchaseService {
     /**
      * Saves purchase, checking for enough item's quantity, sends email message if everything is ok
      *
-     * @param cart Cart
+     * @param cart         Cart
      * @param purchaseInfo DTO that we got from ajax query
-     * @param purchase Purchase
+     * @param purchase     Purchase
      */
     public void savePurchase(Cart cart, PurchaseInfo purchaseInfo, Purchase purchase) {
         Optional<Address> address = addressRepository.findById(purchaseInfo.getAddressId());
@@ -66,14 +66,14 @@ public class PurchaseService {
         for (CartItem cartItem : cart.getCartItems()) {
             for (int i = 0; i < cartItem.getQuantity(); i++) {
 
-                items.add(ItemMapper.INSTANCE.toItem(cartItem.getItemDTO()));
+                items.add(mapper.toItem(cartItem.getItemDTO()));
             }
             if (itemRepository.findById(cartItem.getItemDTO().getId()).getQuantity() < cartItem.getQuantity())
                 throw new OutOfStockException(String.format("Sorry, not enough quantity of %s for your purchase.", cartItem.getItemDTO().getName()));
 
             cartItem.getItemDTO().setQuantity(itemRepository.findById(cartItem.getItemDTO().getId()).getQuantity() - cartItem.getQuantity());
             cartItem.getItemDTO().setSold(itemRepository.findById(cartItem.getItemDTO().getId()).getSold() + cartItem.getQuantity());
-            itemRepository.save(ItemMapper.INSTANCE.toItem(cartItem.getItemDTO()));
+            itemRepository.save(mapper.toItem(cartItem.getItemDTO()));
         }
         purchase.setItems(items);
         purchase.setPaymentMethod(purchaseInfo.getPaymentMethod());
@@ -88,10 +88,12 @@ public class PurchaseService {
 
             totalPrice += item.getItemDTO().getPrice() * item.getQuantity();
         }
-        if (!purchaseInfo.getDiscountCode().isEmpty()) {
+        if (!purchaseInfo.getDiscountCode().trim().isEmpty()) {
             DiscountCode discountCode = discountRepository.findByName(purchaseInfo.getDiscountCode()).get();
-            purchase.setDiscountCode(discountCode);
-            totalPrice = totalPrice * (1 - (float)discountCode.getPercentDiscount() / 100);
+            purchase.setDiscountCode(discountCode.getName());
+            totalPrice = totalPrice * (1 - (float) discountCode.getPercentDiscount() / 100);
+        } else {
+            purchase.setDiscountCode("none");
         }
         purchase.setTotalPrice(totalPrice);
         purchase.setDateCreated(LocalDateTime.now());

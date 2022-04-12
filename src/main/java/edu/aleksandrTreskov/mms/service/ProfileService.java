@@ -9,6 +9,7 @@ import edu.aleksandrTreskov.mms.exception.EmailAlreadyExistsException;
 import edu.aleksandrTreskov.mms.exception.FieldIsEmptyException;
 import edu.aleksandrTreskov.mms.exception.PasswordsNotMatchException;
 import edu.aleksandrTreskov.mms.mapstruct.mapper.ClientMapper;
+import edu.aleksandrTreskov.mms.mapstruct.mapper.ItemMapper;
 import edu.aleksandrTreskov.mms.repository.ClientRepository;
 import edu.aleksandrTreskov.mms.repository.PurchaseRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +24,13 @@ public class ProfileService {
     private final PurchaseRepository purchaseRepository;
     private final ClientRepository clientRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ClientMapper clientMapper = ClientMapper.INSTANCE;
 
 
     public List<ClientDTO> getAllClients() {
 
         List<ClientDTO> clients = new ArrayList<>();
-        clientRepository.findAll().forEach(client -> clients.add(ClientMapper.INSTANCE.toDTO(client)));
+        clientRepository.findAll().forEach(client -> clients.add(clientMapper.toDTO(client)));
         return clients;
     }
 
@@ -50,7 +52,7 @@ public class ProfileService {
         List<Client> clients = clientRepository.findTop10ByPurchases();
         List<Integer> totalPrice = purchaseRepository.findTopPurchasePrices();
         for (int i = 0; i < clients.size(); i++) {
-            map.put(ClientMapper.INSTANCE.toDTO(clients.get(i)), totalPrice.get(i));
+            map.put(clientMapper.toDTO(clients.get(i)), totalPrice.get(i));
         }
         return map;
 
