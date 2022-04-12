@@ -3,6 +3,7 @@ package edu.aleksandrTreskov.mms.controller;
 import edu.aleksandrTreskov.mms.dto.AddItemToCart;
 import edu.aleksandrTreskov.mms.dto.Cart;
 import edu.aleksandrTreskov.mms.dto.ResponseAttribute;
+import edu.aleksandrTreskov.mms.entity.DiscountCode;
 import edu.aleksandrTreskov.mms.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -36,8 +37,7 @@ public class CartController {
     @GetMapping("/cart/removeItem/{index}")
     public String removeItemFromCart(@PathVariable int index, HttpSession session) {
         Cart cart = (Cart) session.getAttribute("cart");
-
-        cart.getCartItems().remove(index);
+        cartService.removeItemFromCart(index, cart);
         return "redirect:/cart";
     }
 
@@ -48,4 +48,6 @@ public class CartController {
         cartService.addItemToCart(addItemToCart, cart);
         return ResponseAttribute.builder().error(false).build();
     }
+
 }
+

@@ -9,4 +9,5 @@ public class ResponseAttribute {
     private boolean error;
     private AddressDTO addressDTO;
     private String message;
+    private int discountPercent;
 }

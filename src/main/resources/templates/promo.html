@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css&js/css/main.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <title>Promo</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img th:src="@{/img/logo/logo.png}" srwidth="auto" height="40" class="d-inline-block align-top" alt=""/>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto"></ul>
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="fa fa-user nav-link mt-1" th:href="@{/profile}" href="#"></a>
+                </li>
+
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/catalog}" href="#">shop</a>
+                </li>
+                <li class="nav-item active" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="nav-link" th:href="@{/newItem}" href="#">add new item</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/promo}" href="#">promo</a>
+                </li>
+                <li class="nav-item active" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="nav-link" th:href="@{/stats}" href="#">view sales stats</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/auth/login}">login</a>
+                </li>
+                <li class="nav-item active">
+
+                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/auth/logout}"
+                       type="submit">logout</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/purchases}" href="#">purchases</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="fa fa-shopping-cart nav-link " th:href="@{/cart}" href="#"></a>
+                </li>
+                <li class="nav-item active">
+                    <span class="nav-link badge text-danger" id="cartCount" th:text="${cartCount}">0</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <h1>E-shop events</h1>
+
+    <div th:if="${#lists.isEmpty(discounts)}">There is no active discounts yet :(</div>
+    <div th:if="${!#lists.isEmpty(discounts)}" class="card" style="margin-top: 20px" th:each="discount : ${discounts}">
+        <div class="row no-gutters">
+            <div class="col-sm-7 d-flex justify-content-center">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${discount.name}"></h5>
+                    <div>
+                        <h4><span th:text="${discount.description}"></span></h4>
+                    </div>
+                    <a href="#" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/promo/{id}(id=${discount.id})}" class="btn btn-primary btn-danger ml-2">Delete
+                        discount code</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <br>
+    <input sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-primary btn-info" type="button" id="addNewPromoFormButton" onclick="addPromoForm()"
+           value="Add new discount">
+    <div sec:authorize="hasRole('ROLE_ADMIN')" id="newPromo">
+        <div id="newPromoForm" style="display: none">
+
+            <div class="form-row">
+                <div class="col">
+                    <label class="col-sm-2 col-form-label" for="discountName"><span class="">Name</span></label>
+                    <input class="form-control" id="discountName" name="discountName" placeholder="Name" required=""
+                           type="text">
+                </div>
+                <div class="col">
+                    <label class="col-sm-2 col-form-label" for="percentOfDiscount"><span class="d-inline-block">Percent</span></label>
+                    <input class="form-control" id="percentOfDiscount" name="PercentOfDiscount"
+                           placeholder="Percent of discount" required=""
+                           type="number">
+                </div>
+                <div class="col">
+                    <label class="col-sm-2 col-form-label" for="requiredSum"><span class="d-inline-block">Sum</span></label>
+                    <input class="form-control" id="requiredSum" name="requiredSum"
+                           placeholder="Required sum for activating" required=""
+                           type="number">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col">
+                    <label class="col-sm-2 col-form-label" for="discountDescription">Description</label>
+                    <textarea class="form-control" id="discountDescription" name="discountDescription"
+                           placeholder="Description" required=""
+                              type="text"></textarea>
+                </div>
+            </div>
+        </div>
+        &nbsp;
+        <input  class="btn btn-primary btn-info" style="display: none" id="confirmDiscountButton" type="submit" onclick="confirmPromo()" value="Confirm">
+
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="../css&js/js/addToCartFunction.js"></script>
+<script src="../css&js/js/discountFunction.js"></script>
+</body>
+</html>

@@ -31,7 +31,7 @@ function addLess(id) {
 function addToCart(id) {
     let quantity = document.getElementById('quantity' + id);
     let addItem = {
-        id: id,
+        productId: id,
         quantity: quantity.textContent
     };
     let cartCount = document.getElementById('cartCount');

@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import javax.validation.ConstraintViolationException;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @ControllerAdvice
 @RestControllerAdvice
@@ -22,11 +22,30 @@ public class GlobalExceptionHandler {
     public static final String DEFAULT_ERROR_VIEW = "error";
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    @ExceptionHandler(NoSuchElementException.class)
+    public ErrorInfo handleNoSuchElementException(NoSuchElementException ex) {
+        LOGGER.error(ex.getMessage());
+        LOGGER.error(Arrays.toString(ex.getStackTrace()));
+        return new ErrorInfo(ex.getMessage());
+    }
+
+    @ExceptionHandler(DiscountCodeException.class)
+    public ErrorInfo handleDiscountCodeException(DiscountCodeException ex) {
+        LOGGER.warn(ex.getMessage());
+        LOGGER.warn(ex.getMessage());
+        return new ErrorInfo(ex.getMessage());
+    }
+    @ExceptionHandler(WrongActivationCodeException.class)
+    public ErrorInfo handleWrongActivationCodeException(WrongActivationCodeException ex) {
+        LOGGER.warn(ex.getMessage());
+        LOGGER.warn(ex.getMessage());
+        return new ErrorInfo(ex.getMessage());
+    }
 
     @ExceptionHandler(PasswordsNotMatchException.class)
     public ErrorInfo handleMismatchPassword(PasswordsNotMatchException ex) {
-        LOGGER.error(ex.getMessage());
-        LOGGER.error(Arrays.toString(ex.getStackTrace()));
+        LOGGER.warn(ex.getMessage());
+        LOGGER.warn(Arrays.toString(ex.getStackTrace()));
         return new ErrorInfo(ex.getMessage());
     }
 
@@ -38,13 +57,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
-    public ModelAndView handleExistEmailException(EmailAlreadyExistsException ex) {
+    public ErrorInfo handleExistEmailException(EmailAlreadyExistsException ex) {
         LOGGER.error(ex.getMessage());
         LOGGER.error(Arrays.toString(ex.getStackTrace()));
-        ModelAndView mav = new ModelAndView();
-        mav.addObject("exceptionMsg", ex.getMessage());
-        mav.setViewName(DEFAULT_ERROR_VIEW);
-        return mav;
+        return new ErrorInfo(ex.getMessage());
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class, FieldIsEmptyException.class})

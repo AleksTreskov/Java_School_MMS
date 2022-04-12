@@ -4,21 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Online shop</title>
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="../css&js/css/main.css">
+
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"/>
     <!-- Google Fonts Roboto -->
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap"/>
 
     <link rel="stylesheet" href="../libs/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css&js/css/main.css">
     <link href="https://fonts.googleapis.com/css?family=Merriweather:300,400,400i,700&amp;subset=cyrillic-ext"
           rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
 </head>
 
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img th:src="@{/img/logo/logo.png}" srwidth="auto" height="40" class="d-inline-block align-top" alt=""/>
+        </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -36,6 +42,9 @@
 
                 <li class="nav-item active" sec:authorize="hasRole('ROLE_ADMIN')">
                     <a class="nav-link" th:href="@{/newItem}" href="#">add new item</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/promo}" href="#">promo</a>
                 </li>
                 <li class="nav-item active" sec:authorize="hasRole('ROLE_ADMIN')">
                     <a class="nav-link" th:href="@{/stats}" href="#">view sales stats</a>
@@ -74,6 +83,12 @@
                        class="form-control form-control-lg">
             </div>
             <div class="form-group">
+                <label for="phoneNumber">Password</label>
+                <input type="number" class="form-control form-control-lg" required placeholder="Input it in format 79XXXXXXXXX"
+                       name="phoneNumber"
+                       id="phoneNumber">
+            </div>
+            <div class="form-group">
                 <label for="email">Email address</label>
                 <input type="email" class="form-control form-control-lg" required minlength="6" placeholder="Email"
                        name="email" id="email"
@@ -93,14 +108,24 @@
                        name="birthDate"
                        id="birthDate">
             </div>
-
-            <button type="submit" value="Register" class="btn btn-primary btn-block">Register</button>
+            <button id="activationCodeButton" type="button" value="ActivationCode" class="btn btn-primary btn-block" onclick="sendCodeOnEmail()">Get activation code</button>
+                <div id="enterCode" class="form-group" style="display: none">
+                    <label for="ActivationCode">We sent activation code on your email, please,check it.</label>
+                    <input type="number" id="ActivationCode" required placeholder="Enter your code here"
+                           class="form-control form-control-lg">
+                    <button id="verifyCodeButton" type="button"  class="btn btn-primary btn-block" onclick="verifyCode()">Verify code</button>
+                </div>
+            <button id="signUpButton" style="display: none" type="submit" value="Register" class="btn btn-primary btn-block">Register</button>
             <span style="margin-top: 10px">Already have an account? <a th:href="@{/auth/login}">Login here</a></span>
         </form>
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 <script src="../css&js/js/addToCartFunction.js"></script>
+<script src="../css&js/js/signUpFunction.js"></script>
+
 </body>
 
 </html>

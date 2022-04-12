@@ -4,11 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Online shop</title>
+    <title>E-shop electronic store</title>
+    <link rel="stylesheet" href="../css&js/css/main.css">
+
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"/>
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap"/>
-    <link rel="stylesheet" href="../css&js/css/main.css">
 
     <link rel="stylesheet" href="../libs/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
@@ -45,6 +46,9 @@
                 <li class="nav-item active" sec:authorize="hasRole('ROLE_ADMIN')">
                     <a class="nav-link" th:href="@{/stats}" href="#">view sales stats</a>
                 </li>
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/promo}" href="#">promo</a>
+                </li>
 
                 <li class="nav-item active">
                     <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/auth/login}">login</a>
@@ -73,24 +77,24 @@
         <p class="lead">Browse our products</p>
     </div>
 </header>
-<div class="row col-sm-20" style="justify-content: center">
-    <a th:href="@{'/page/'+${currentPage}+'?sortField=name&sortDir='+${reverseSortDir}}">
+<div th:unless ="${chosenCategory==null}" class="row col-sm-20" style="justify-content: center">
+    <a th:href="@{'/page/'+${currentPage}+'?category='+${chosenCategory}+'&sortField=name&sortDir='+${reverseSortDir}}">
         <button class="btn-warning">Sort By Name</button>
     </a>&nbsp;
-    <a th:href="@{'/page/'+${currentPage}+'?sortField=price&sortDir='+${reverseSortDir}}">
+    <a th:href="@{'/page/'+${currentPage}+'?category='+${chosenCategory}+'&sortField=price&sortDir='+${reverseSortDir}}">
         <button class="btn-warning">Sort By Price</button>
     </a>&nbsp;
     <a sec:authorize="hasRole('ROLE_ADMIN')"
-       th:href="@{'/page/'+${currentPage}+'?sortField=quantity&sortDir='+${reverseSortDir}}">
+       th:href="@{'/page/'+${currentPage}+'?category='+${chosenCategory}+'&sortField=quantity&sortDir='+${reverseSortDir}}">
         <button class="btn-warning">Sort By Quantity</button>
     </a>&nbsp;
     <a sec:authorize="hasRole('ROLE_ADMIN')"
-       th:href="@{'/page/'+${currentPage}+'?sortField=sold&sortDir='+${reverseSortDir}}">
+       th:href="@{'/page/'+${currentPage}+'?category='+${chosenCategory}+'&sortField=sold&sortDir='+${reverseSortDir}}">
         <button class="btn-warning">Sort By Sold</button>
     </a>
 
 </div>
-<div class="container" style="margin-top: 30px">
+<div  class="container" style="margin-top: 30px">
     <div class="row">
         <div class="col-sm-3">
             <h4>Categories</h4>

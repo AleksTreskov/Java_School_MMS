@@ -4,11 +4,13 @@ import edu.aleksandrTreskov.mms.common.PaymentStatus;
 import edu.aleksandrTreskov.mms.common.PurchaseStatus;
 import edu.aleksandrTreskov.mms.dto.*;
 import edu.aleksandrTreskov.mms.entity.Address;
+import edu.aleksandrTreskov.mms.entity.DiscountCode;
 import edu.aleksandrTreskov.mms.entity.Item;
 import edu.aleksandrTreskov.mms.entity.Purchase;
 import edu.aleksandrTreskov.mms.exception.OutOfStockException;
 import edu.aleksandrTreskov.mms.mapstruct.mapper.ItemMapper;
 import edu.aleksandrTreskov.mms.repository.AddressRepository;
+import edu.aleksandrTreskov.mms.repository.DiscountRepository;
 import edu.aleksandrTreskov.mms.repository.ItemRepository;
 import edu.aleksandrTreskov.mms.repository.PurchaseRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -26,6 +29,9 @@ public class PurchaseService {
     private final AddressRepository addressRepository;
     private final ItemRepository itemRepository;
     private final MessageService messageService;
+    private final EmailService emailService;
+    private final DiscountRepository discountRepository;
+
 
     public List<PurchaseDTO> getAllPurchasesForClient(String email) {
         List<Purchase> purchases = purchaseRepository.getAllPurchasesByClientEmail(email);
@@ -46,6 +52,13 @@ public class PurchaseService {
         return purchaseDTOS;
     }
 
+    /**
+     * Saves purchase, checking for enough item's quantity, sends email message if everything is ok
+     *
+     * @param cart Cart
+     * @param purchaseInfo DTO that we got from ajax query
+     * @param purchase Purchase
+     */
     public void savePurchase(Cart cart, PurchaseInfo purchaseInfo, Purchase purchase) {
         Optional<Address> address = addressRepository.findById(purchaseInfo.getAddressId());
         address.ifPresent(purchase::setAddress);
@@ -67,18 +80,27 @@ public class PurchaseService {
         purchase.setShipmentMethod(purchaseInfo.getDeliveryMethod());
         purchase.setPurchaseStatus(PurchaseStatus.WAITINGFORSHIPMENT);
         purchase.setPaymentStatus(PaymentStatus.PAID);
+
         purchase.setDeleted(false);
-        int totalPrice = 0;
+        float totalPrice = 0;
         for (CartItem item : cart.getCartItems()
         ) {
 
             totalPrice += item.getItemDTO().getPrice() * item.getQuantity();
         }
+        if (!purchaseInfo.getDiscountCode().isEmpty()) {
+            DiscountCode discountCode = discountRepository.findByName(purchaseInfo.getDiscountCode()).get();
+            purchase.setDiscountCode(discountCode);
+            totalPrice = totalPrice * (1 - (float)discountCode.getPercentDiscount() / 100);
+        }
         purchase.setTotalPrice(totalPrice);
         purchase.setDateCreated(LocalDateTime.now());
 
         purchaseRepository.save(purchase);
-        messageService.sendMessage();
+        messageService.sendEmailMessage();
+        emailService.sendSimpleMessage(purchase.getClient().getEmail(),
+                String.format("Your purchase with id № %d has been registered", purchase.getId()),
+                String.format("Thanks for choosing E-shop! Here is your order № %d", purchase.getId()) + purchase.getItems().toString());
 
 
     }
@@ -112,6 +134,13 @@ public class PurchaseService {
 
     public List<Purchase> findPurchasesForThisMonth(int month) {
         return purchaseRepository.findPurchasesInMonth(month);
+    }
+
+    public Purchase getPurchaseById(long id) {
+        Optional<Purchase> purchaseOpt = purchaseRepository.findById(id);
+        if (purchaseOpt.isPresent())
+            return purchaseOpt.get();
+        else throw new NoSuchElementException("No purchase with that id");
     }
 }
 

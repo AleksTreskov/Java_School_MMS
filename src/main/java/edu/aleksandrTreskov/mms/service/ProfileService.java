@@ -1,19 +1,19 @@
 package edu.aleksandrTreskov.mms.service;
 
+import edu.aleksandrTreskov.mms.dto.ChangePasswordDTO;
+import edu.aleksandrTreskov.mms.dto.ClientDTO;
+import edu.aleksandrTreskov.mms.dto.RecoverPasswordDTO;
 import edu.aleksandrTreskov.mms.entity.Client;
 import edu.aleksandrTreskov.mms.entity.Role;
 import edu.aleksandrTreskov.mms.exception.EmailAlreadyExistsException;
 import edu.aleksandrTreskov.mms.exception.FieldIsEmptyException;
 import edu.aleksandrTreskov.mms.exception.PasswordsNotMatchException;
-import edu.aleksandrTreskov.mms.dto.ChangePasswordDTO;
-import edu.aleksandrTreskov.mms.dto.ClientDTO;
 import edu.aleksandrTreskov.mms.mapstruct.mapper.ClientMapper;
 import edu.aleksandrTreskov.mms.repository.ClientRepository;
 import edu.aleksandrTreskov.mms.repository.PurchaseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.*;
 
@@ -32,14 +32,19 @@ public class ProfileService {
         return clients;
     }
 
-    public void saveClient(Client client) {
+    public void saveClient(Client client) throws EmailAlreadyExistsException {
         if (clientRepository.findByEmail(client.getEmail()).isPresent())
-            throw new EmailAlreadyExistsException("user with that email already exists.");
+            throw new EmailAlreadyExistsException("User with that email already exists.");
         client.setRole(new Role(2, "ROLE_USER"));
         client.setPassword(passwordEncoder.encode(client.getPassword()));
         clientRepository.save(client);
     }
 
+    /**
+     * Finds top clients, who spent the most amount.
+     *
+     * @return
+     */
     public Map<ClientDTO, Integer> findTop10ByPurchases() {
         Map<ClientDTO, Integer> map = new LinkedHashMap<>();
         List<Client> clients = clientRepository.findTop10ByPurchases();
@@ -61,7 +66,7 @@ public class ProfileService {
 
 
     public void updateClient(ClientDTO clientDTO, Client client) {
-        if (clientDTO.getName().isEmpty()||clientDTO.getSurname().isEmpty())
+        if (clientDTO.getName().isEmpty() || clientDTO.getSurname().isEmpty())
             throw new FieldIsEmptyException("as");
         client.setSurname(clientDTO.getSurname());
         client.setName(clientDTO.getName());
@@ -77,5 +82,21 @@ public class ProfileService {
             throw new PasswordsNotMatchException("Wrong password");
         }
 
+    }
+
+    public void setNewPassword(RecoverPasswordDTO recoverPasswordDTO) {
+        Client client;
+        Optional<Client> optClient = clientRepository.findByPhoneNumber(recoverPasswordDTO.getLoginParameter());
+        client = optClient.orElseGet(() -> clientRepository.findByEmail(recoverPasswordDTO.getLoginParameter()).get());
+        client.setPassword(passwordEncoder.encode(recoverPasswordDTO.getPassword()));
+        clientRepository.save(client);
+    }
+
+    public boolean checkExistingEmail(String email) {
+        return clientRepository.findByEmail(email.substring(1, email.length() - 1)).isPresent();
+    }
+
+    public boolean checkExistingPhone(String phoneNumber) {
+        return clientRepository.findByPhoneNumber(phoneNumber.substring(1, phoneNumber.length() - 1)).isPresent();
     }
 }

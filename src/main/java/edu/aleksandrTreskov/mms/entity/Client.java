@@ -1,7 +1,6 @@
 package edu.aleksandrTreskov.mms.entity;
 
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -13,8 +12,9 @@ import java.util.List;
 
 @Table(name = "CLIENT")
 @Entity
-@Data
-@ToString
+@Getter
+@Setter
+@EqualsAndHashCode
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,10 +31,13 @@ public class Client {
     @NotNull
     @Column(name = "email", nullable = false)
     private String email;
+    @NotNull
+    @Column(name = "phoneNumber")
+    private String phoneNumber;
     @Column(name = "password", nullable = false)
     @Size(min = 4)
     private String password;
-    @OneToMany(mappedBy = "client")
+    @OneToMany(mappedBy = "client",fetch = FetchType.EAGER)
     private List<Address> addresses;
     @ManyToOne
     @JoinColumn(name = "role_id")
@@ -42,4 +45,8 @@ public class Client {
     @Column(name = "is_deleted")
     private boolean isDeleted = false;
 
+    @Override
+    public String toString() {
+        return "Client"+id;
+    }
 }
