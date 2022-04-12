@@ -21,6 +21,7 @@ public class CartService {
 
     private final ItemRepository itemRepository;
     private final PurchaseRepository purchaseRepository;
+    private final ItemMapper itemMapper = ItemMapper.INSTANCE;
 
     /**
      *Adds item to cart, if item's quantity is not enough - throws exception
@@ -36,7 +37,7 @@ public class CartService {
         }
         if (itemExistInCartCheck(cart.getCartItems(), addItemToCart.getProductId()) == -1) {
             CartItem cartItem = new CartItem(
-                    ItemMapper.INSTANCE.toDTO(item),
+                    itemMapper.toDTO(item),
                     addItemToCart.getQuantity());
             cart.getCartItems().add(cartItem);
         } else {
@@ -107,7 +108,7 @@ public class CartService {
             for (Item item : purchase.getItems()
             ) {
                 if (itemExistInCartCheck(cart.getCartItems(), item.getId()) == -1) {
-                    cart.getCartItems().add(new CartItem(ItemMapper.INSTANCE.toDTO(item), 1));
+                    cart.getCartItems().add(new CartItem(itemMapper.toDTO(item), 1));
                 } else {
                     cart.getCartItems().get(itemExistInCartCheck(cart.getCartItems(), item.getId())).addQuantity(1);
                 }

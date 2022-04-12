@@ -31,11 +31,12 @@ function onChoosingCategory() {
 
 function onCreatingItem() {
     let selected = document.getElementById("selectCategory");
-    let newCategory = document.getElementById("newCategory").value;
-    let newOption = document.getElementById("newCategoryOption");
-
     if (selected.value === "category") {
-        newOption.value = newCategory;
+    let newCategory = document.getElementById("newCategory").value;
+    let newCategoryOption = document.getElementById("newCategoryOption");
+
+
+        newCategoryOption.value = newCategory;
     }
 
 }

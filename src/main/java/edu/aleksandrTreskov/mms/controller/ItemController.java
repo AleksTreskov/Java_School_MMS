@@ -21,6 +21,7 @@ import java.util.List;
 public class ItemController {
     private final ItemService itemService;
     private final CartService cartService;
+    private final ItemMapper itemMapper = ItemMapper.INSTANCE;
 
     @GetMapping("/{category}/{pageNo}")
     public String filterByCategory(@PathVariable("category") String category, @PathVariable("pageNo") int pageNo, @RequestParam("sortField") String sortField,
@@ -62,9 +63,9 @@ public class ItemController {
     }
 
     @GetMapping({"/", "/catalog"})
-    public String homePage(@RequestParam(value = "category", required = false) String category,Model model, HttpSession session) {
+    public String homePage(@RequestParam(value = "category", required = false) String category, Model model, HttpSession session) {
 
-        return findPaginated(1, category,"id", "asc", model, session);
+        return findPaginated(1, category, "id", "asc", model, session);
     }
 
 //    @GetMapping("/top")
@@ -96,7 +97,8 @@ public class ItemController {
     @ResponseBody
     @PostMapping("/saveEditItem")
     public ItemDTO saveEditedItem(@RequestBody ItemDTO itemDTO) {
-        itemService.saveItem(ItemMapper.INSTANCE.toItem(itemDTO));
+
+        itemService.saveItem(itemMapper.toItem(itemDTO));
         return itemService.findById(itemDTO.getId());
     }
 
