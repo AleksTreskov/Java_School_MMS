@@ -68,11 +68,7 @@ public class ItemController {
         return findPaginated(1, category, "id", "asc", model, session);
     }
 
-//    @GetMapping("/top")
-//    public String findTop10(Model model) {
-//        model.addAttribute("items", itemService.findTop10());
-//        return "items";
-//    }
+
 
     @GetMapping("/item/{id}")
     public String findItemById(@PathVariable long id, Model model, HttpSession session) {
@@ -90,8 +86,7 @@ public class ItemController {
     @ResponseBody
     @PostMapping("/editItem")
     public ItemDTO findItemForEdit(@RequestBody Long id) {
-        ItemDTO item = itemService.findById(id);
-        return item;
+        return itemService.findById(id);
     }
 
     @ResponseBody

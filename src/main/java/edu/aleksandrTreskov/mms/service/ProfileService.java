@@ -15,11 +15,14 @@ import edu.aleksandrTreskov.mms.repository.PurchaseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
+
 public class ProfileService {
     private final PurchaseRepository purchaseRepository;
     private final ClientRepository clientRepository;

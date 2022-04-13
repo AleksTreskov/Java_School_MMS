@@ -10,13 +10,16 @@ import edu.aleksandrTreskov.mms.mapstruct.mapper.ItemMapper;
 import edu.aleksandrTreskov.mms.repository.ItemRepository;
 import edu.aleksandrTreskov.mms.repository.PurchaseRepository;
 import lombok.Data;
+import net.bytebuddy.asm.Advice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @Data
+@Transactional
 public class CartService {
 
     private final ItemRepository itemRepository;

@@ -15,6 +15,7 @@ import edu.aleksandrTreskov.mms.repository.ItemRepository;
 import edu.aleksandrTreskov.mms.repository.PurchaseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class PurchaseService {
     private final PurchaseRepository purchaseRepository;
     private final AddressRepository addressRepository;
@@ -59,6 +61,7 @@ public class PurchaseService {
      * @param purchaseInfo DTO that we got from ajax query
      * @param purchase     Purchase
      */
+
     public void savePurchase(Cart cart, PurchaseInfo purchaseInfo, Purchase purchase) {
         Optional<Address> address = addressRepository.findById(purchaseInfo.getAddressId());
         address.ifPresent(purchase::setAddress);
